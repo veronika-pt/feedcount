@@ -8,6 +8,8 @@
 	/** @type {{ setup: FeedCountSetup, onSave: (setup: FeedCountSetup) => void }} */
 	let { setup, onSave } = $props();
 
+	let saveStatus = $state('idle');
+
 	let draftSetup = $state({
 		...defaultSetup,
 		currentWeightKg: String(defaultSetup.currentWeightKg),
@@ -23,6 +25,10 @@
 		};
 	});
 
+	function markAsChanged() {
+		saveStatus = 'idle';
+	}
+
 	function saveForm() {
 		onSave({
 			...draftSetup,
@@ -30,6 +36,8 @@
 			formulaKcalPer100ml: Number(draftSetup.formulaKcalPer100ml),
 			bottleSizesMl: draftSetup.bottleSizesMl.map(Number)
 		});
+
+		saveStatus = 'saved';
 	}
 </script>
 
@@ -41,6 +49,8 @@
 	</div>
 
 	<form
+		oninput={markAsChanged}
+		onchange={markAsChanged}
 		onsubmit={(event) => {
 			event.preventDefault();
 			saveForm();
@@ -131,7 +141,9 @@
 			/>
 		</label>
 
-		<button type="submit">Save setup</button>
+		<button type="submit" class:saved={saveStatus === 'saved'}>
+			{saveStatus === 'saved' ? 'Saved ✓' : 'Save setup'}
+		</button>
 	</form>
 </section>
 
@@ -241,5 +253,18 @@
 		color: var(--color-button-text);
 		background: var(--color-button-bg);
 		cursor: pointer;
+		transition:
+			transform 120ms ease,
+			opacity 120ms ease,
+			filter 120ms ease;
+	}
+
+	button:active {
+		transform: scale(0.98);
+		filter: brightness(0.95);
+	}
+
+	button.saved {
+		opacity: 0.9;
 	}
 </style>
