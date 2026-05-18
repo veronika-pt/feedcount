@@ -2,8 +2,15 @@
 	import { onMount } from 'svelte';
 	import SetupForm from '$lib/components/SetupForm.svelte';
 	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
+	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
+	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
 
 	const appName = 'FeedCount';
+
+	const dailyEnergyTarget = $derived(getDailyEnergyTarget($setup));
+	const dailyFormulaTargetMl = $derived(
+		getDailyFormulaTargetMl(dailyEnergyTarget?.kcalPerDay, $setup.formulaKcalPer100ml)
+	);
 
 	onMount(() => {
 		initialiseSetup();
@@ -32,6 +39,20 @@
 		<p class="note">
 			FeedCount gives practical estimates only. It does not replace medical advice.
 		</p>
+
+		{#if dailyFormulaTargetMl}
+			<div class="result">
+				<p class="result-label">Estimated daily formula target</p>
+				<p class="result-value">{dailyFormulaTargetMl} ml</p>
+				<p class="result-note">
+					Estimate based on the selected energy reference and formula calories per 100 ml.
+				</p>
+			</div>
+		{:else}
+			<p class="note">
+				Add valid setup values to calculate the estimated daily formula target.
+			</p>
+		{/if}
 	</section>
 
 	<SetupForm setup={$setup} onSave={updateSetup} />
@@ -83,6 +104,35 @@
 	.note {
 		margin: 20px 0 0;
 		font-size: 0.95rem;
+		line-height: 1.4;
+		color: var(--color-text-muted);
+	}
+
+	.result {
+		margin-top: 20px;
+		padding: 16px;
+		border-radius: 16px;
+		background: var(--color-page-bg);
+	}
+
+	.result-label {
+		margin: 0;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--color-text-muted);
+	}
+
+	.result-value {
+		margin: 6px 0 0;
+		font-size: 2rem;
+		font-weight: 800;
+		line-height: 1;
+		color: var(--color-text-primary);
+	}
+
+	.result-note {
+		margin: 8px 0 0;
+		font-size: 0.85rem;
 		line-height: 1.4;
 		color: var(--color-text-muted);
 	}
