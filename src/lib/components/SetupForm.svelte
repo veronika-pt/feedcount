@@ -52,16 +52,48 @@
 
 		<label>
 			<span>Birth date</span>
-			<input bind:value={draftSetup.birthDate} type="date" />
+			<input
+				bind:value={draftSetup.birthDate}
+				type="text"
+				placeholder="YYYY-MM-DD"
+				inputmode="numeric"
+				autocomplete="off"
+			/>
 		</label>
 
-		<label>
-			<span>Baby sex</span>
-			<select bind:value={draftSetup.babySex}>
-				<option value="female">Female</option>
-				<option value="male">Male</option>
-			</select>
-		</label>
+		<fieldset class="field">
+			<legend>Baby sex</legend>
+
+			<label class="radio-option">
+				<input
+					type="radio"
+					name="babySex"
+					value="female"
+					bind:group={draftSetup.babySex}
+				/>
+				<span>Female</span>
+			</label>
+
+			<label class="radio-option">
+				<input
+					type="radio"
+					name="babySex"
+					value="male"
+					bind:group={draftSetup.babySex}
+				/>
+				<span>Male</span>
+			</label>
+
+			<label class="radio-option">
+				<input
+					type="radio"
+					name="babySex"
+					value="unspecified"
+					bind:group={draftSetup.babySex}
+				/>
+				<span>Unspecified</span>
+			</label>
+		</fieldset>
 
 		<label>
 			<span>Current weight, kg</span>
@@ -143,16 +175,45 @@
 		color: var(--color-text-primary);
 	}
 
+	.field {
+		display: grid;
+		gap: 0.45rem;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	legend {
+		padding: 0;
+		font-weight: 650;
+		color: var(--color-text-primary);
+	}
+
+	.radio-option {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 1.75rem;
+		font-weight: 500;
+		color: var(--color-text-primary);
+	}
+
+	.radio-option input {
+		width: 1rem;
+		height: 1rem;
+		min-height: auto;
+		margin: 0;
+		padding: 0;
+	}
+
 	input,
-	select,
 	button {
 		min-height: 3rem;
 		border-radius: 0.9rem;
 		font: inherit;
 	}
 
-	input,
-	select {
+	input {
 		border: 1px solid rgb(0 0 0 / 0.12);
 		padding: 0 0.9rem;
 		background: var(--color-card-bg);

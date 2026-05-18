@@ -4,7 +4,7 @@
  */
 
 /**
- * @typedef {'female' | 'male'} BabySex
+ @typedef {'female' | 'male' | 'unspecified'} BabySex
  */
 
 /**
@@ -24,5 +24,5 @@ export const defaultSetup = {
 	babySex: 'female',
 	currentWeightKg: 0,
 	formulaKcalPer100ml: 66,
-	bottleSizesMl: [70, 105, 140, 175]
+	bottleSizesMl: [70, 105, 140, 175, 210]
 };
