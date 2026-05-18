@@ -10,6 +10,7 @@
 
 	let draftSetup = $state({
 		...defaultSetup,
+		currentWeightKg: String(defaultSetup.currentWeightKg),
 		bottleSizesMl: [...defaultSetup.bottleSizesMl]
 	});
 
@@ -17,6 +18,7 @@
 		draftSetup = {
 			...defaultSetup,
 			...setup,
+			currentWeightKg: String(setup.currentWeightKg ?? defaultSetup.currentWeightKg),
 			bottleSizesMl: [...(setup.bottleSizesMl ?? defaultSetup.bottleSizesMl)]
 		};
 	});
@@ -24,7 +26,7 @@
 	function saveForm() {
 		onSave({
 			...draftSetup,
-			currentWeightKg: Number(draftSetup.currentWeightKg),
+			currentWeightKg: Number(draftSetup.currentWeightKg.replace(',', '.')),
 			formulaKcalPer100ml: Number(draftSetup.formulaKcalPer100ml),
 			bottleSizesMl: draftSetup.bottleSizesMl.map(Number)
 		});
@@ -112,10 +114,9 @@
 			<span>Current weight, kg</span>
 			<input
 				bind:value={draftSetup.currentWeightKg}
-				type="number"
-				min="0"
-				step="0.01"
+				type="text"
 				inputmode="decimal"
+				autocomplete="off"
 			/>
 		</label>
 
