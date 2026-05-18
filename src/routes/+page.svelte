@@ -32,8 +32,6 @@
 		<p class="note">
 			FeedCount gives practical estimates only. It does not replace medical advice.
 		</p>
-
-		<button type="button">Start setup</button>
 	</section>
 
 	<SetupForm setup={$setup} onSave={updateSetup} />
@@ -87,20 +85,5 @@
 		font-size: 0.95rem;
 		line-height: 1.4;
 		color: var(--color-text-muted);
-	}
-
-	button {
-		width: 100%;
-		min-height: 52px;
-		margin-top: 28px;
-		border: 0;
-		border-radius: 999px;
-		background: var(--color-button-bg);
-		color: var(--color-button-text);
-		font-weight: 700;
-	}
-
-	button:active {
-		transform: scale(0.99);
 	}
 </style>
