@@ -30,21 +30,9 @@
 </main>
 
 <style>
-	:global(*) {
-		box-sizing: border-box;
-	}
-
-	:global(body) {
-		margin: 0;
-		font-family:
-			-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-		background: #f5f5f7;
-		color: #1d1d1f;
-	}
-
 	.page {
 		min-height: 100vh;
-		padding: 24px 16px;
+		padding: 24px var(--space-page-x);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -54,9 +42,9 @@
 		width: 100%;
 		max-width: 420px;
 		padding: 24px;
-		border-radius: 28px;
-		background: #ffffff;
-		box-shadow: 0 16px 40px rgb(0 0 0 / 0.08);
+		border-radius: var(--radius-card);
+		background: var(--color-card-bg);
+		box-shadow: var(--shadow-card);
 	}
 
 	.eyebrow {
@@ -65,27 +53,28 @@
 		font-weight: 700;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		color: #6e6e73;
+		color: var(--color-text-muted);
 	}
 
 	h1 {
 		margin: 0;
 		font-size: clamp(2.2rem, 10vw, 3.2rem);
 		letter-spacing: -0.06em;
+		color: var(--color-text-primary);
 	}
 
 	.intro {
 		margin: 16px 0 0;
 		font-size: 1.05rem;
 		line-height: 1.5;
-		color: #424245;
+		color: var(--color-text-secondary);
 	}
 
 	.note {
 		margin: 20px 0 0;
 		font-size: 0.95rem;
 		line-height: 1.4;
-		color: #6e6e73;
+		color: var(--color-text-muted);
 	}
 
 	button {
@@ -94,40 +83,12 @@
 		margin-top: 28px;
 		border: 0;
 		border-radius: 999px;
-		background: #1d1d1f;
-		color: #ffffff;
-		font: inherit;
+		background: var(--color-button-bg);
+		color: var(--color-button-text);
 		font-weight: 700;
-		cursor: pointer;
 	}
 
 	button:active {
 		transform: scale(0.99);
-	}
-
-	@media (prefers-color-scheme: dark) {
-		:global(body) {
-			background: #000000;
-			color: #f5f5f7;
-		}
-
-		.card {
-			background: #1c1c1e;
-			box-shadow: none;
-		}
-
-		.intro {
-			color: #d1d1d6;
-		}
-
-		.note,
-		.eyebrow {
-			color: #a1a1a6;
-		}
-
-		button {
-			background: #f5f5f7;
-			color: #1d1d1f;
-		}
 	}
 </style>
