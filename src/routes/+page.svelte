@@ -1,5 +1,13 @@
 <script>
+	import { onMount } from 'svelte';
+	import SetupForm from '$lib/components/SetupForm.svelte';
+	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
+
 	const appName = 'FeedCount';
+
+	onMount(() => {
+		initialiseSetup();
+	});
 </script>
 
 <svelte:head>
@@ -27,6 +35,8 @@
 
 		<button type="button">Start setup</button>
 	</section>
+
+	<SetupForm setup={$setup} onSave={updateSetup} />
 </main>
 
 <style>
@@ -34,8 +44,10 @@
 		min-height: 100vh;
 		padding: 24px var(--space-page-x);
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		gap: 20px;
 	}
 
 	.card {
