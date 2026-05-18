@@ -4,7 +4,11 @@
  */
 
 /**
- @typedef {'female' | 'male' | 'unspecified'} BabySex
+ * @typedef {'female' | 'male' | 'unspecified'} BabySex
+ */
+
+/**
+ * @typedef {'mixed' | 'formulaOnly'} FeedingMode
  */
 
 /**
@@ -12,6 +16,7 @@
  * @property {string} babyName
  * @property {string} birthDate
  * @property {BabySex} babySex
+ * @property {FeedingMode} feedingMode
  * @property {number} currentWeightKg
  * @property {number} formulaKcalPer100ml
  * @property {number[]} bottleSizesMl
@@ -22,7 +27,8 @@ export const defaultSetup = {
 	babyName: '',
 	birthDate: '',
 	babySex: 'female',
-	currentWeightKg: 0,
+	feedingMode: 'mixed',
+	currentWeightKg: 6.7,
 	formulaKcalPer100ml: 66,
 	bottleSizesMl: [70, 105, 140, 175, 210]
 };

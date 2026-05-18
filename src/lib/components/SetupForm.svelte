@@ -15,8 +15,9 @@
 
 	$effect(() => {
 		draftSetup = {
+			...defaultSetup,
 			...setup,
-			bottleSizesMl: [...setup.bottleSizesMl]
+			bottleSizesMl: [...(setup.bottleSizesMl ?? defaultSetup.bottleSizesMl)]
 		};
 	});
 
@@ -34,9 +35,7 @@
 	<div class="setup-header">
 		<p class="eyebrow">Setup</p>
 		<h2 id="setup-title">Baby and formula details</h2>
-		<p class="helper">
-			These details help FeedCount estimate today’s remaining formula feeds.
-		</p>
+		<p class="helper">These details help FeedCount estimate today’s remaining formula feeds.</p>
 	</div>
 
 	<form
@@ -65,22 +64,12 @@
 			<legend>Baby sex</legend>
 
 			<label class="radio-option">
-				<input
-					type="radio"
-					name="babySex"
-					value="female"
-					bind:group={draftSetup.babySex}
-				/>
+				<input type="radio" name="babySex" value="female" bind:group={draftSetup.babySex} />
 				<span>Female</span>
 			</label>
 
 			<label class="radio-option">
-				<input
-					type="radio"
-					name="babySex"
-					value="male"
-					bind:group={draftSetup.babySex}
-				/>
+				<input type="radio" name="babySex" value="male" bind:group={draftSetup.babySex} />
 				<span>Male</span>
 			</label>
 
@@ -92,6 +81,30 @@
 					bind:group={draftSetup.babySex}
 				/>
 				<span>Unspecified</span>
+			</label>
+		</fieldset>
+
+		<fieldset class="field">
+			<legend>Feeding mode</legend>
+
+			<label class="radio-option">
+				<input
+					type="radio"
+					name="feedingMode"
+					value="mixed"
+					bind:group={draftSetup.feedingMode}
+				/>
+				<span>Mixed feeding</span>
+			</label>
+
+			<label class="radio-option">
+				<input
+					type="radio"
+					name="feedingMode"
+					value="formulaOnly"
+					bind:group={draftSetup.feedingMode}
+				/>
+				<span>Formula feeding only</span>
 			</label>
 		</fieldset>
 
