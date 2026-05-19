@@ -1,19 +1,29 @@
 <script>
 	import { onMount } from 'svelte';
 	import SetupForm from '$lib/components/SetupForm.svelte';
+	import DailyInput from '$lib/components/DailyInput.svelte';
 	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
 	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
 	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
+	import { createDailyInputState } from '$lib/state/dailyInputState.svelte.js';
 
 	const appName = 'FeedCount';
+
+	const dailyInputState = createDailyInputState();
 
 	const dailyEnergyTarget = $derived(getDailyEnergyTarget($setup));
 	const dailyFormulaTargetMl = $derived(
 		getDailyFormulaTargetMl(dailyEnergyTarget?.kcalPerDay, $setup.formulaKcalPer100ml)
 	);
+	const remainingFormulaMl = $derived(
+		dailyFormulaTargetMl === null
+			? null
+			: Math.max(0, dailyFormulaTargetMl - dailyInputState.dailyInput.formulaConsumedMl)
+	);
 
 	onMount(() => {
 		initialiseSetup();
+		dailyInputState.load();
 	});
 </script>
 
@@ -48,12 +58,25 @@
 					Estimate based on the selected energy reference and formula calories per 100 ml.
 				</p>
 			</div>
+
+			<div class="result">
+				<p class="result-label">Estimated formula remaining today</p>
+				<p class="result-value">{remainingFormulaMl} ml</p>
+				<p class="result-note">
+					Based on today’s total formula intake entered below.
+				</p>
+			</div>
 		{:else}
 			<p class="note">
 				Add valid setup values to calculate the estimated daily formula target.
 			</p>
 		{/if}
 	</section>
+
+	<DailyInput
+		dailyInput={dailyInputState.dailyInput}
+		onChange={dailyInputState.update}
+	/>
 
 	<SetupForm setup={$setup} onSave={updateSetup} />
 </main>
