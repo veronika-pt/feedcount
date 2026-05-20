@@ -143,9 +143,9 @@
 			</ul>
 		</section>
 	{:else if dailyFormulaTargetMl !== null}
-		<section class="card">
+		<section class="card remaining-card">
 			<p class="card-title">Remaining formula today</p>
-			<p class="primary-value">{remainingFormulaMl} ml</p>
+			<p class="remaining-value">{remainingFormulaMl} ml</p>
 
 			{#if isAboveFormulaEstimate}
 				<p class="body-text">
@@ -268,10 +268,16 @@
 		box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text-primary) 5%, transparent);
 	}
 
+	.remaining-card,
 	.quiet-card,
 	.reference-card,
 	.about-card {
 		box-shadow: none;
+	}
+
+	.remaining-card {
+		padding: 16px 18px;
+		background: color-mix(in srgb, var(--color-card-bg) 88%, white 12%);
 	}
 
 	.quiet-card {
@@ -291,12 +297,12 @@
 		color: var(--color-text-primary);
 	}
 
-	.primary-value {
-		margin: 12px 0 0;
-		font-size: 1.8rem;
-		font-weight: 650;
+	.remaining-value {
+		margin: 8px 0 0;
+		font-size: 1.45rem;
+		font-weight: 600;
 		line-height: 1;
-		letter-spacing: -0.02em;
+		letter-spacing: -0.015em;
 		color: var(--color-text-primary);
 	}
 
