@@ -17,6 +17,20 @@ function toValidMl(value) {
 }
 
 /**
+ * @param {unknown} value
+ * @returns {number}
+ */
+function toValidFeedCount(value) {
+	const numberValue = Number(value);
+
+	if (!Number.isFinite(numberValue) || numberValue < 0) {
+		return defaultDailyInput.formulaFeedsLeftToday;
+	}
+
+	return Math.floor(numberValue);
+}
+
+/**
  * @returns {import('$lib/data/dailyInputDefaults.js').DailyInput}
  */
 export function loadDailyInput() {
@@ -35,7 +49,8 @@ export function loadDailyInput() {
 
 		return {
 			...defaultDailyInput,
-			formulaConsumedMl: toValidMl(parsedValue.formulaConsumedMl)
+			formulaConsumedMl: toValidMl(parsedValue.formulaConsumedMl),
+			formulaFeedsLeftToday: toValidFeedCount(parsedValue.formulaFeedsLeftToday)
 		};
 	} catch {
 		return { ...defaultDailyInput };
@@ -53,7 +68,8 @@ export function saveDailyInput(dailyInput) {
 	localStorage.setItem(
 		dailyInputStorageKey,
 		JSON.stringify({
-			formulaConsumedMl: toValidMl(dailyInput.formulaConsumedMl)
+			formulaConsumedMl: toValidMl(dailyInput.formulaConsumedMl),
+			formulaFeedsLeftToday: toValidFeedCount(dailyInput.formulaFeedsLeftToday)
 		})
 	);
 }

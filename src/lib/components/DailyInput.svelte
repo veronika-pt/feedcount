@@ -7,9 +7,11 @@
 	let { dailyInput, onChange } = $props();
 
 	let formulaConsumedInput = $state('0');
+	let formulaFeedsLeftInput = $state('0');
 
 	$effect(() => {
 		formulaConsumedInput = String(dailyInput.formulaConsumedMl ?? 0);
+		formulaFeedsLeftInput = String(dailyInput.formulaFeedsLeftToday ?? 0);
 	});
 
 	/**
@@ -32,14 +34,36 @@
 			formulaConsumedMl
 		});
 	}
+
+	/**
+	 * @param {Event} event
+	 */
+	function handleFormulaFeedsLeftInput(event) {
+		const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+		const value = input.value;
+
+		formulaFeedsLeftInput = value;
+
+		const formulaFeedsLeftToday = value === '' ? 0 : Number(value);
+
+		if (!Number.isFinite(formulaFeedsLeftToday) || formulaFeedsLeftToday < 0) {
+			return;
+		}
+
+		onChange({
+			...dailyInput,
+			formulaFeedsLeftToday: Math.floor(formulaFeedsLeftToday)
+		});
+	}
 </script>
 
 <section class="daily-input-card">
 	<div>
 		<p class="eyebrow">Today</p>
-		<h2>Formula consumed today</h2>
+		<h2>Today’s formula plan</h2>
 		<p class="description">
-			Enter the total amount of formula already consumed today. This is not a feeding log.
+			Enter the formula already consumed today and how many formula feeds you still plan.
+			This is not a feeding log.
 		</p>
 	</div>
 
@@ -57,6 +81,23 @@
 			/>
 
 			<span class="unit">ml</span>
+		</div>
+	</label>
+
+	<label class="field">
+		<span>Formula feeds left today</span>
+
+		<div class="input-row">
+			<input
+				type="number"
+				min="0"
+				step="1"
+				inputmode="numeric"
+				value={formulaFeedsLeftInput}
+				oninput={handleFormulaFeedsLeftInput}
+			/>
+
+			<span class="unit">feeds</span>
 		</div>
 	</label>
 </section>

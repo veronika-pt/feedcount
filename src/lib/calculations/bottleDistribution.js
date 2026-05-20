@@ -10,19 +10,25 @@
  * @typedef {Object} BottleCombination
  * @property {number[]} bottlesMl
  * @property {number} totalMl
+ * @property {number} spreadMl
  */
 
 /**
  * @typedef {Object} BottleDistributionInput
  * @property {number} remainingFormulaMl
  * @property {number[]} bottleSizesMl
+ * @property {number} feedCount
  */
 
 /**
  * Suggests simple bottle combinations for the remaining formula amount.
  *
  * This is intentionally lightweight. It does not create a feeding plan.
- * It only helps estimate practical bottle combinations using saved bottle sizes.
+ * It only helps estimate practical bottle combinations using saved bottle sizes
+ * and the number of formula feeds planned for the rest of the day.
+ *
+ * The helper prefers combinations that are close to the remaining amount
+ * and reasonably even across bottles.
  *
  * @param {BottleDistributionInput} input
  * @returns {BottleDistributionSuggestion[]}
@@ -30,12 +36,19 @@
 export function getBottleDistributionSuggestions(input) {
 	const remainingFormulaMl = Math.round(input.remainingFormulaMl);
 	const bottleSizesMl = getValidBottleSizes(input.bottleSizesMl);
+	const feedCount = Math.floor(input.feedCount);
 
-	if (!Number.isFinite(remainingFormulaMl) || remainingFormulaMl <= 0 || bottleSizesMl.length === 0) {
+	if (
+		!Number.isFinite(remainingFormulaMl) ||
+		remainingFormulaMl <= 0 ||
+		bottleSizesMl.length === 0 ||
+		!Number.isFinite(feedCount) ||
+		feedCount <= 0
+	) {
 		return [];
 	}
 
-	const combinations = getSimpleBottleCombinations(remainingFormulaMl, bottleSizesMl);
+	const combinations = getSimpleBottleCombinations(bottleSizesMl, feedCount);
 
 	const closestToTarget = findClosestToTarget(combinations, remainingFormulaMl);
 	const smallBufferAboveTarget = findSmallBufferAboveTarget(combinations, remainingFormulaMl);
@@ -66,14 +79,11 @@ function getValidBottleSizes(bottleSizesMl) {
 }
 
 /**
- * @param {number} remainingFormulaMl
  * @param {number[]} bottleSizesMl
+ * @param {number} feedCount
  * @returns {BottleCombination[]}
  */
-function getSimpleBottleCombinations(remainingFormulaMl, bottleSizesMl) {
-	const maxBottleSize = Math.max(...bottleSizesMl);
-	const maxBottleCount = Math.max(1, Math.ceil(remainingFormulaMl / maxBottleSize) + 1);
-
+function getSimpleBottleCombinations(bottleSizesMl, feedCount) {
 	/** @type {BottleCombination[]} */
 	const combinations = [];
 
@@ -82,16 +92,15 @@ function getSimpleBottleCombinations(remainingFormulaMl, bottleSizesMl) {
 	 * @param {number} startIndex
 	 */
 	function build(currentBottles, startIndex) {
-		if (currentBottles.length > 0) {
+		if (currentBottles.length === feedCount) {
 			const totalMl = currentBottles.reduce((sum, bottle) => sum + bottle, 0);
 
 			combinations.push({
 				bottlesMl: [...currentBottles],
-				totalMl
+				totalMl,
+				spreadMl: getBottleSpreadMl(currentBottles)
 			});
-		}
 
-		if (currentBottles.length >= maxBottleCount) {
 			return;
 		}
 
@@ -108,6 +117,18 @@ function getSimpleBottleCombinations(remainingFormulaMl, bottleSizesMl) {
 }
 
 /**
+ * @param {number[]} bottlesMl
+ * @returns {number}
+ */
+function getBottleSpreadMl(bottlesMl) {
+	if (bottlesMl.length <= 1) {
+		return 0;
+	}
+
+	return Math.max(...bottlesMl) - Math.min(...bottlesMl);
+}
+
+/**
  * @param {BottleCombination[]} combinations
  * @param {number} remainingFormulaMl
  * @returns {BottleDistributionSuggestion | null}
@@ -121,8 +142,8 @@ function findClosestToTarget(combinations, remainingFormulaMl) {
 			return differenceA - differenceB;
 		}
 
-		if (a.bottlesMl.length !== b.bottlesMl.length) {
-			return a.bottlesMl.length - b.bottlesMl.length;
+		if (a.spreadMl !== b.spreadMl) {
+			return a.spreadMl - b.spreadMl;
 		}
 
 		return a.totalMl - b.totalMl;
@@ -156,7 +177,11 @@ function findSmallBufferAboveTarget(combinations, remainingFormulaMl) {
 				return differenceA - differenceB;
 			}
 
-			return a.bottlesMl.length - b.bottlesMl.length;
+			if (a.spreadMl !== b.spreadMl) {
+				return a.spreadMl - b.spreadMl;
+			}
+
+			return a.totalMl - b.totalMl;
 		})[0];
 
 	if (!buffer) {

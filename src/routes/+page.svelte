@@ -41,7 +41,8 @@
 			? []
 			: getBottleDistributionSuggestions({
 					remainingFormulaMl,
-					bottleSizesMl: $setup.bottleSizesMl
+					bottleSizesMl: $setup.bottleSizesMl,
+					feedCount: dailyInputState.dailyInput.formulaFeedsLeftToday
 				})
 	);
 
@@ -139,7 +140,11 @@
 			<div class="result">
 				<p class="result-label">Bottle ideas</p>
 
-				{#if bottleDistributionSuggestions.length > 0}
+				{#if dailyInputState.dailyInput.formulaFeedsLeftToday <= 0}
+					<p class="result-note">
+						Enter how many formula feeds are left today to get bottle ideas.
+					</p>
+				{:else if bottleDistributionSuggestions.length > 0}
 					<div class="suggestions">
 						{#each bottleDistributionSuggestions as suggestion}
 							<div class="suggestion">
@@ -155,13 +160,12 @@
 					</div>
 
 					<p class="result-note">
-						These are practical bottle estimates using your saved bottle sizes, not a
-						strict feeding plan.
+						These are practical bottle estimates using your saved bottle sizes and planned
+						formula feeds, not a strict feeding plan.
 					</p>
 				{:else}
 					<p class="result-note">
-						No useful bottle suggestion yet. Add remaining formula for today and check
-						that bottle sizes are saved in setup.
+						No useful bottle suggestion yet. Check that bottle sizes are saved in setup.
 					</p>
 				{/if}
 			</div>
