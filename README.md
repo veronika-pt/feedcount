@@ -1,42 +1,84 @@
-# sv
+# FeedCount
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+FeedCount is a small mobile-first SvelteKit app that helps parents estimate how much formula may remain for the day.
 
-## Creating a project
+The MVP is intentionally narrow. It focuses on one practical question: based on the baby’s setup, estimated daily formula target, and today’s consumed formula, how much formula is left today?
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Core problem
 
-```sh
-# create a new project
-npx sv create my-app
-```
+Parents who use formula often need a simple way to understand whether they are roughly on track for the day.
 
-To recreate this project with the same configuration:
+FeedCount helps make this easier by turning a few setup values into a calm daily estimate. It is not designed to replace medical guidance, detailed baby tracking, or professional feeding advice.
 
-```sh
-# recreate this project
-npx sv@0.15.3 create --template minimal --types jsdoc --add prettier eslint --install npm feedcount
-```
+## MVP features
 
-## Developing
+The current MVP includes:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- Baby setup values:
+  - birth date
+  - sex
+  - current weight
+  - feeding mode
+  - formula kcal per 100 ml
+  - usual bottle sizes
+- Local setup storage using `localStorage`
+- Daily formula intake input
+- Daily formula target estimate
+- Remaining formula estimate for today
+- Bottle distribution suggestions based on saved bottle sizes
+- Basic validation for missing or invalid values
+- Friendly empty states when required data is not ready
+- Mobile-first interface
 
-```sh
-npm run dev
+## What is intentionally out of scope
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+FeedCount is not a full baby tracker.
 
-## Building
+The MVP does not include:
 
-To create a production version of your app:
+- accounts
+- backend storage
+- cloud sync
+- charts
+- feeding history
+- breastfeeding tracking
+- sleep tracking
+- diaper tracking
+- notes
+- reminders
+- notifications
+- medical recommendations
+- growth tracking
+- multi-child support
 
-```sh
-npm run build
-```
+These are intentionally excluded to keep the MVP focused, understandable, and easy to test.
 
-You can preview the production build with `npm run preview`.
+## Estimates and limitations
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+All calculations in FeedCount are estimates.
+
+The app uses simplified inputs to provide a practical daily reference, not a precise feeding plan. Babies’ needs vary, and feeding decisions should always consider the child’s behaviour, medical context, and advice from qualified healthcare professionals.
+
+FeedCount is not medical advice.
+
+## Data storage
+
+The MVP stores data locally in the browser using `localStorage`.
+
+There is no backend, no account system, and no data sync between devices. Clearing browser data may remove saved setup and daily input values.
+
+## Tech stack
+
+FeedCount is built with:
+
+- SvelteKit
+- JavaScript with JSDoc
+- localStorage
+- mobile-first CSS
+
+## Local development
+
+Install dependencies:
+
+```bash
+npm install
