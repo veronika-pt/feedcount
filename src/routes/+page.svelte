@@ -102,8 +102,7 @@
 	<header class="app-header">
 		<h1>{appName}</h1>
 		<p class="intro">
-			Practical estimates for planning today’s feeds.<br />
-			Not medical advice.
+			Practical estimates for planning today’s feeds. Not medical advice.
 		</p>
 	</header>
 
@@ -113,7 +112,7 @@
 		<section class="card">
 			<p class="card-title">Complete your setup</p>
 			<p class="body-text">
-				FeedCount needs a few basic details before it can estimate today’s formula.
+	Add the missing setup details below to see today’s estimate.
 			</p>
 
 			<ul class="message-list">
@@ -126,8 +125,7 @@
 		<section class="card">
 			<p class="card-title">Check today’s input</p>
 			<p class="body-text">
-				Today’s formula intake needs a valid amount before FeedCount can calculate what
-				remains.
+				Check today’s formula intake to update the estimate.
 			</p>
 
 			<ul class="message-list">
@@ -143,8 +141,7 @@
 
 			{#if isAboveFormulaEstimate}
 				<p class="body-text">
-					Today’s entered formula is already above the estimate. This can happen – the
-					number is only a practical guide.
+					Today’s entered formula is above the estimate. Use it as a practical guide.
 				</p>
 			{:else}
 				<p class="body-text">This is an estimate, not a medical target.</p>
@@ -156,7 +153,7 @@
 
 			{#if dailyInputState.dailyInput.formulaFeedsLeftToday <= 0}
 				<p class="body-text">
-					Enter how many formula feeds are left today to get bottle ideas.
+					Add feeds left to see bottle ideas.
 				</p>
 			{:else if primaryBottleDistributionSuggestion}
 				<div class="suggestions">
@@ -172,7 +169,6 @@
 					</div>
 				</div>
 
-				<p class="body-text">A practical bottle idea using your saved bottle sizes.</p>
 
 				{#if otherBottleDistributionSuggestions.length > 0}
 					<details class="other-options">
@@ -196,7 +192,7 @@
 				{/if}
 			{:else}
 				<p class="body-text">
-					No useful bottle suggestion yet. Check that bottle sizes are saved in setup.
+					Check saved bottle sizes in setup.
 				</p>
 			{/if}
 		</section>
@@ -204,15 +200,13 @@
 		<section class="card reference-card">
 			<p class="card-title">Daily estimate</p>
 			<p class="secondary-value">{dailyFormulaTargetMl} ml</p>
-			<p class="body-text">
-				Based on the selected energy reference and formula calories per 100 ml.
-			</p>
 		</section>
+
 	{:else}
 		<section class="card">
 			<p class="card-title">Formula estimate is not ready yet</p>
 			<p class="body-text">
-				Check the setup values below, then save again to refresh the estimate.
+				Check setup below, then save again.
 			</p>
 		</section>
 	{/if}
@@ -222,8 +216,7 @@
 
 		<div class="about-content">
 			<p>
-				FeedCount helps estimate how much formula may still be needed today, using the
-				setup details and today’s entered formula intake.
+				FeedCount estimates how much formula may still be needed today, using setup details, today’s entered formula intake, feeds left, and saved bottle sizes.
 			</p>
 
 			<p>
