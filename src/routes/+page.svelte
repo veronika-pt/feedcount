@@ -65,10 +65,10 @@
 	 */
 	function getSuggestionLabel(suggestionType) {
 		if (suggestionType === 'closest-to-target') {
-			return 'Closest to target';
+			return 'Closest option';
 		}
 
-		return 'Small buffer above target';
+		return 'Small buffer';
 	}
 
 	/**
@@ -85,14 +85,14 @@
 	 */
 	function formatDifference(differenceMl) {
 		if (differenceMl === 0) {
-			return 'Matches the remaining estimate.';
+			return 'Matches today’s estimate.';
 		}
 
 		if (differenceMl > 0) {
-			return `${differenceMl} ml above the remaining estimate.`;
+			return `About ${differenceMl} ml above today’s estimate.`;
 		}
 
-		return `${Math.abs(differenceMl)} ml below the remaining estimate.`;
+		return `About ${Math.abs(differenceMl)} ml below today’s estimate.`;
 	}
 </script>
 
@@ -100,200 +100,224 @@
 	<title>{appName}</title>
 	<meta
 		name="description"
-		content="A small app for estimating remaining formula feeds during mixed feeding."
+		content="A small app for estimating remaining formula feeds today."
 	/>
 </svelte:head>
 
 <main class="page">
-	<section class="card">
-		<p class="eyebrow">Mixed feeding helper</p>
-
+	<header class="app-header">
 		<h1>{appName}</h1>
-
 		<p class="intro">
-			Estimate how much formula is left for today, based on formula already consumed,
-			breastfeeding sessions, and remaining feeds.
+			Practical estimates for planning today’s feeds.<br />
+			Not medical advice.
 		</p>
+	</header>
 
-		<p class="note">
-			FeedCount gives practical estimates only. It does not replace medical advice.
-		</p>
+	<DailyInput dailyInput={dailyInputState.dailyInput} onChange={dailyInputState.update} />
 
-		{#if !setupValidation.isValid}
-			<div class="empty-state">
-				<p class="empty-state-title">Complete your setup</p>
-				<p class="empty-state-text">
-					FeedCount needs a few basic details before it can estimate today’s formula.
+	{#if !setupValidation.isValid}
+		<section class="card">
+			<p class="card-title">Complete your setup</p>
+			<p class="body-text">
+				FeedCount needs a few basic details before it can estimate today’s formula.
+			</p>
+
+			<ul class="message-list">
+				{#each setupValidation.messages as message}
+					<li>{message}</li>
+				{/each}
+			</ul>
+		</section>
+	{:else if !dailyInputValidation.isValid}
+		<section class="card">
+			<p class="card-title">Check today’s input</p>
+			<p class="body-text">
+				Today’s formula intake needs a valid amount before FeedCount can calculate what
+				remains.
+			</p>
+
+			<ul class="message-list">
+				{#each dailyInputValidation.messages as message}
+					<li>{message}</li>
+				{/each}
+			</ul>
+		</section>
+	{:else if dailyFormulaTargetMl !== null}
+		<section class="card">
+			<p class="card-title">Remaining formula today</p>
+			<p class="primary-value">{remainingFormulaMl} ml</p>
+
+			{#if isAboveFormulaEstimate}
+				<p class="body-text">
+					Today’s entered formula is already above the estimate. This can happen – the
+					number is only a practical guide.
 				</p>
+			{:else}
+				<p class="body-text">This is an estimate, not a medical target.</p>
+			{/if}
+		</section>
 
-				<ul class="empty-state-list">
-					{#each setupValidation.messages as message}
-						<li>{message}</li>
+		<section class="card quiet-card">
+			<p class="card-title">Suggested bottle split</p>
+
+			{#if dailyInputState.dailyInput.formulaFeedsLeftToday <= 0}
+				<p class="body-text">
+					Enter how many formula feeds are left today to get bottle ideas.
+				</p>
+			{:else if bottleDistributionSuggestions.length > 0}
+				<div class="suggestions">
+					{#each bottleDistributionSuggestions as suggestion}
+						<div class="suggestion">
+							<p class="suggestion-label">{getSuggestionLabel(suggestion.type)}</p>
+							<p class="suggestion-value">
+								{formatBottleCombination(suggestion.bottlesMl)}
+							</p>
+							<p class="body-text">
+								Total: {suggestion.totalMl} ml • {formatDifference(suggestion.differenceMl)}
+							</p>
+						</div>
 					{/each}
-				</ul>
-			</div>
-		{:else if !dailyInputValidation.isValid}
-			<div class="empty-state">
-				<p class="empty-state-title">Check today’s input</p>
-				<p class="empty-state-text">
-					Today’s formula intake needs a valid amount before FeedCount can calculate what
-					remains.
+				</div>
+
+				<p class="body-text">Practical bottle ideas using your saved bottle sizes.</p>
+			{:else}
+				<p class="body-text">
+					No useful bottle suggestion yet. Check that bottle sizes are saved in setup.
 				</p>
+			{/if}
+		</section>
 
-				<ul class="empty-state-list">
-					{#each dailyInputValidation.messages as message}
-						<li>{message}</li>
-					{/each}
-				</ul>
-			</div>
-		{:else if dailyFormulaTargetMl !== null}
-			<div class="result">
-				<p class="result-label">Estimated daily formula target</p>
-				<p class="result-value">{dailyFormulaTargetMl} ml</p>
-				<p class="result-note">
-					Estimate based on the selected energy reference and formula calories per 100 ml.
-				</p>
-			</div>
+		<section class="card reference-card">
+			<p class="card-title">Daily estimate</p>
+			<p class="secondary-value">{dailyFormulaTargetMl} ml</p>
+			<p class="body-text">
+				Based on the selected energy reference and formula calories per 100 ml.
+			</p>
+		</section>
+	{:else}
+		<section class="card">
+			<p class="card-title">Formula estimate is not ready yet</p>
+			<p class="body-text">
+				Check the setup values below, then save again to refresh the estimate.
+			</p>
+		</section>
+	{/if}
 
-			<div class="result">
-				<p class="result-label">Estimated formula remaining today</p>
-				<p class="result-value">{remainingFormulaMl} ml</p>
+	<details class="card about-card">
+		<summary>About FeedCount</summary>
 
-				{#if isAboveFormulaEstimate}
-					<p class="result-note">
-						Today’s entered formula is already above the estimate. This can happen – the
-						number is only a practical guide.
-					</p>
-				{:else}
-					<p class="result-note">
-						Based on today’s total formula intake entered below. This is an estimate, not
-						a medical target.
-					</p>
-				{/if}
-			</div>
+		<div class="about-content">
+			<p>
+				FeedCount helps estimate how much formula may still be needed today, using the
+				setup details and today’s entered formula intake.
+			</p>
 
-			<div class="result">
-				<p class="result-label">Bottle ideas</p>
+			<p>
+				The numbers are practical planning estimates only. They are not medical targets
+				and do not replace advice from a clinician.
+			</p>
+		</div>
+	</details>
 
-				{#if dailyInputState.dailyInput.formulaFeedsLeftToday <= 0}
-					<p class="result-note">
-						Enter how many formula feeds are left today to get bottle ideas.
-					</p>
-				{:else if bottleDistributionSuggestions.length > 0}
-					<div class="suggestions">
-						{#each bottleDistributionSuggestions as suggestion}
-							<div class="suggestion">
-								<p class="suggestion-label">{getSuggestionLabel(suggestion.type)}</p>
-								<p class="suggestion-value">
-									{formatBottleCombination(suggestion.bottlesMl)}
-								</p>
-								<p class="suggestion-note">
-									Total: {suggestion.totalMl} ml. {formatDifference(suggestion.differenceMl)}
-								</p>
-							</div>
-						{/each}
-					</div>
-
-					<p class="result-note">
-						These are practical bottle estimates using your saved bottle sizes and planned
-						formula feeds, not a strict feeding plan.
-					</p>
-				{:else}
-					<p class="result-note">
-						No useful bottle suggestion yet. Check that bottle sizes are saved in setup.
-					</p>
-				{/if}
-			</div>
-		{:else}
-			<div class="empty-state">
-				<p class="empty-state-title">Formula estimate is not ready yet</p>
-				<p class="empty-state-text">
-					Check the setup values below, then save again to refresh the estimate.
-				</p>
-			</div>
-		{/if}
+	<section class="setup-section">
+		<SetupForm setup={$setup} onSave={updateSetup} />
 	</section>
-
-	<DailyInput
-		dailyInput={dailyInputState.dailyInput}
-		onChange={dailyInputState.update}
-	/>
-
-	<SetupForm setup={$setup} onSave={updateSetup} />
 </main>
 
 <style>
 	.page {
 		min-height: 100vh;
-		padding: 24px var(--space-page-x);
+		padding: 24px var(--space-page-x) 36px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		gap: 20px;
+		gap: 14px;
+		background: color-mix(in srgb, var(--color-page-bg) 76%, white 24%);
+	}
+
+	.app-header {
+		width: 100%;
+		max-width: 420px;
+		padding: 6px 2px 14px;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: clamp(2.25rem, 9vw, 2.9rem);
+		font-weight: 700;
+		line-height: 1;
+		letter-spacing: -0.05em;
+		color: var(--color-text-primary);
+	}
+
+	.intro {
+		margin: 14px 0 0;
+		font-size: 0.96rem;
+		font-weight: 400;
+		line-height: 1.45;
+		color: var(--color-text-secondary);
 	}
 
 	.card {
 		width: 100%;
 		max-width: 420px;
-		padding: 24px;
-		border-radius: var(--radius-card);
+		padding: 18px;
+		border: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+		border-radius: 24px;
 		background: var(--color-card-bg);
-		box-shadow: var(--shadow-card);
+		box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text-primary) 5%, transparent);
 	}
 
-	.eyebrow {
-		margin: 0 0 8px;
-		font-size: 0.8rem;
-		font-weight: 700;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--color-text-muted);
+	.quiet-card,
+	.reference-card,
+	.about-card {
+		box-shadow: none;
 	}
 
-	h1 {
+	.quiet-card {
+		background: color-mix(in srgb, var(--color-card-bg) 70%, var(--color-page-bg) 30%);
+	}
+
+	.reference-card {
+		background: transparent;
+	}
+
+	.card-title {
 		margin: 0;
-		font-size: clamp(2.2rem, 10vw, 3.2rem);
-		letter-spacing: -0.06em;
+		font-size: 1rem;
+		font-weight: 650;
+		line-height: 1.3;
+		letter-spacing: -0.015em;
 		color: var(--color-text-primary);
 	}
 
-	.intro {
-		margin: 16px 0 0;
-		font-size: 1.05rem;
-		line-height: 1.5;
-		color: var(--color-text-secondary);
-	}
-
-	.note {
-		margin: 20px 0 0;
-		font-size: 0.95rem;
-		line-height: 1.4;
-		color: var(--color-text-muted);
-	}
-
-	.empty-state {
-		margin-top: 20px;
-		padding: 16px;
-		border-radius: 16px;
-		background: var(--color-page-bg);
-	}
-
-	.empty-state-title {
-		margin: 0;
-		font-size: 0.95rem;
-		font-weight: 800;
+	.primary-value {
+		margin: 12px 0 0;
+		font-size: 1.8rem;
+		font-weight: 650;
+		line-height: 1;
+		letter-spacing: -0.02em;
 		color: var(--color-text-primary);
 	}
 
-	.empty-state-text {
-		margin: 8px 0 0;
+	.secondary-value {
+		margin: 10px 0 0;
+		font-size: 1.4rem;
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: -0.015em;
+		color: var(--color-text-primary);
+	}
+
+	.body-text {
+		margin: 10px 0 0;
 		font-size: 0.9rem;
-		line-height: 1.4;
+		font-weight: 400;
+		line-height: 1.45;
 		color: var(--color-text-muted);
 	}
 
-	.empty-state-list {
+	.message-list {
 		margin: 12px 0 0;
 		padding-left: 20px;
 		font-size: 0.9rem;
@@ -301,68 +325,91 @@
 		color: var(--color-text-secondary);
 	}
 
-	.result {
-		margin-top: 20px;
-		padding: 16px;
-		border-radius: 16px;
-		background: var(--color-page-bg);
-	}
-
-	.result-label {
-		margin: 0;
-		font-size: 0.85rem;
-		font-weight: 700;
-		color: var(--color-text-muted);
-	}
-
-	.result-value {
-		margin: 6px 0 0;
-		font-size: 2rem;
-		font-weight: 800;
-		line-height: 1;
-		color: var(--color-text-primary);
-	}
-
-	.result-note {
-		margin: 8px 0 0;
-		font-size: 0.85rem;
-		line-height: 1.4;
-		color: var(--color-text-muted);
-	}
-
 	.suggestions {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
+		display: grid;
+		gap: 0;
 		margin-top: 12px;
+		border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
 	}
 
 	.suggestion {
-		padding: 12px;
-		border-radius: 12px;
-		background: var(--color-card-bg);
+		padding: 14px 0;
+		border-bottom: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
 	}
 
 	.suggestion-label {
 		margin: 0;
-		font-size: 0.78rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
+		font-size: 0.86rem;
+		font-weight: 500;
+		line-height: 1.35;
 		color: var(--color-text-muted);
 	}
 
 	.suggestion-value {
 		margin: 6px 0 0;
-		font-size: 1.1rem;
-		font-weight: 800;
+		font-size: 1.25rem;
+		font-weight: 600;
+		line-height: 1.2;
+		letter-spacing: -0.015em;
 		color: var(--color-text-primary);
 	}
 
-	.suggestion-note {
-		margin: 6px 0 0;
-		font-size: 0.85rem;
-		line-height: 1.4;
+	.about-card {
+		padding: 0;
+		overflow: hidden;
+		background: var(--color-card-bg);
+	}
+
+	summary {
+		min-height: 58px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 0 18px;
+		font-size: 1rem;
+		font-weight: 650;
+		line-height: 1.3;
+		color: var(--color-text-primary);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	summary::-webkit-details-marker {
+		display: none;
+	}
+
+	summary::after {
+		content: '⌄';
+		font-size: 1.1rem;
+		font-weight: 400;
 		color: var(--color-text-muted);
+		transition: transform 0.15s ease;
+	}
+
+	.about-card[open] summary::after {
+		transform: rotate(180deg);
+	}
+
+	.about-content {
+		padding: 0 18px 18px;
+	}
+
+	.about-content p {
+		margin: 0;
+		font-size: 0.9rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: var(--color-text-muted);
+	}
+
+	.about-content p + p {
+		margin-top: 10px;
+	}
+
+	.setup-section {
+		width: 100%;
+		max-width: 420px;
+		margin-top: 10px;
 	}
 </style>

@@ -7,11 +7,9 @@
 	let { dailyInput, onChange } = $props();
 
 	let formulaConsumedInput = $state('0');
-	let formulaFeedsLeftInput = $state('0');
 
 	$effect(() => {
 		formulaConsumedInput = String(dailyInput.formulaConsumedMl ?? 0);
-		formulaFeedsLeftInput = String(dailyInput.formulaFeedsLeftToday ?? 0);
 	});
 
 	/**
@@ -36,70 +34,67 @@
 	}
 
 	/**
-	 * @param {Event} event
+	 * @param {number} change
 	 */
-	function handleFormulaFeedsLeftInput(event) {
-		const input = /** @type {HTMLInputElement} */ (event.currentTarget);
-		const value = input.value;
-
-		formulaFeedsLeftInput = value;
-
-		const formulaFeedsLeftToday = value === '' ? 0 : Number(value);
-
-		if (!Number.isFinite(formulaFeedsLeftToday) || formulaFeedsLeftToday < 0) {
-			return;
-		}
+	function updateFeedsLeft(change) {
+		const currentFeedsLeft = Number(dailyInput.formulaFeedsLeftToday ?? 0);
+		const nextFeedsLeft = Math.max(0, currentFeedsLeft + change);
 
 		onChange({
 			...dailyInput,
-			formulaFeedsLeftToday: Math.floor(formulaFeedsLeftToday)
+			formulaFeedsLeftToday: nextFeedsLeft
 		});
 	}
 </script>
 
 <section class="daily-input-card">
-	<div>
-		<p class="eyebrow">Today</p>
-		<h2>Today’s formula plan</h2>
-		<p class="description">
-			Enter the formula already consumed today and how many formula feeds you still plan.
-			This is not a feeding log.
-		</p>
+	<h2>Today’s feedings</h2>
+
+	<div class="daily-controls">
+		<label class="field">
+			<span class="field-label">Formula consumed today</span>
+
+			<div class="input-row">
+				<input
+					type="number"
+					min="0"
+					step="1"
+					inputmode="numeric"
+					value={formulaConsumedInput}
+					oninput={handleFormulaConsumedInput}
+					aria-label="Formula consumed today in millilitres"
+				/>
+
+				<span class="unit">ml</span>
+			</div>
+		</label>
+
+		<div class="field">
+			<span class="field-label">Feeds left today</span>
+
+			<div class="stepper" aria-label="Formula feeds left today">
+				<button
+					type="button"
+					class="stepper-button"
+					aria-label="Decrease feeds left today"
+					onclick={() => updateFeedsLeft(-1)}
+				>
+					−
+				</button>
+
+				<span class="stepper-value">{dailyInput.formulaFeedsLeftToday ?? 0}</span>
+
+				<button
+					type="button"
+					class="stepper-button"
+					aria-label="Increase feeds left today"
+					onclick={() => updateFeedsLeft(1)}
+				>
+					+
+				</button>
+			</div>
+		</div>
 	</div>
-
-	<label class="field">
-		<span>Formula consumed today</span>
-
-		<div class="input-row">
-			<input
-				type="number"
-				min="0"
-				step="1"
-				inputmode="numeric"
-				value={formulaConsumedInput}
-				oninput={handleFormulaConsumedInput}
-			/>
-
-			<span class="unit">ml</span>
-		</div>
-	</label>
-
-	<label class="field">
-		<span>Formula feeds left today</span>
-
-		<div class="input-row">
-			<input
-				type="number"
-				min="0"
-				step="1"
-				inputmode="numeric"
-				value={formulaFeedsLeftInput}
-				oninput={handleFormulaFeedsLeftInput}
-			/>
-
-			<span class="unit">feeds</span>
-		</div>
-	</label>
 </section>
 
 <style>
@@ -107,56 +102,127 @@
 		width: 100%;
 		max-width: 420px;
 		display: grid;
-		gap: 1rem;
-		padding: 1rem;
-		border: 1px solid var(--color-border, #ddd);
-		border-radius: 1rem;
-		background: var(--color-surface, #fff);
-	}
-
-	.eyebrow {
-		margin: 0 0 0.25rem;
-		font-size: 0.75rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--color-muted, #666);
+		gap: 18px;
+		padding: 18px;
+		border: 1px solid color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+		border-radius: 24px;
+		background: var(--color-card-bg);
+		box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text-primary) 5%, transparent);
 	}
 
 	h2 {
 		margin: 0;
-		font-size: 1.1rem;
+		font-size: 1.2rem;
+		font-weight: 650;
+		line-height: 1.25;
+		letter-spacing: -0.02em;
+		color: var(--color-text-primary);
 	}
 
-	.description {
-		margin: 0.35rem 0 0;
-		color: var(--color-muted, #666);
-		line-height: 1.4;
+	.daily-controls {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 14px;
 	}
 
 	.field {
 		display: grid;
-		gap: 0.4rem;
-		font-weight: 600;
+		gap: 8px;
+	}
+
+	.field-label {
+		font-size: 0.9rem;
+		font-weight: 500;
+		line-height: 1.35;
+		color: var(--color-text-secondary);
+	}
+
+	.input-row,
+	.stepper {
+		min-height: 54px;
+		display: flex;
+		align-items: center;
+		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+		border-radius: 16px;
+		background: color-mix(in srgb, var(--color-card-bg) 82%, var(--color-page-bg) 18%);
 	}
 
 	.input-row {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
+		padding: 0 14px;
+		gap: 8px;
 	}
 
 	input {
 		width: 100%;
-		min-height: 2.75rem;
-		padding: 0.65rem 0.75rem;
-		border: 1px solid var(--color-border, #ccc);
-		border-radius: 0.75rem;
+		min-width: 0;
+		border: 0;
+		background: transparent;
 		font: inherit;
+		font-size: 1.35rem;
+		font-weight: 600;
+		line-height: 1;
+		letter-spacing: 0;
+		color: var(--color-text-primary);
+		outline: none;
+		appearance: textfield;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		margin: 0;
+		appearance: none;
 	}
 
 	.unit {
-		color: var(--color-muted, #666);
+		font-size: 0.98rem;
+		font-weight: 500;
+		color: var(--color-text-secondary);
+	}
+
+	.stepper {
+		justify-content: space-between;
+		padding: 7px;
+	}
+
+	.stepper-button {
+		width: 40px;
+		height: 40px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 0;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+		color: var(--color-text-primary);
+		font: inherit;
+		font-size: 1.35rem;
+		font-weight: 400;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	.stepper-button:active {
+		transform: scale(0.98);
+	}
+
+	.stepper-value {
+		min-width: 2ch;
+		text-align: center;
+		font-size: 1.35rem;
 		font-weight: 600;
+		line-height: 1;
+		color: var(--color-text-primary);
+	}
+
+	@media (min-width: 390px) {
+		.daily-controls {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+			gap: 16px;
+		}
+
+		.daily-controls > .field + .field {
+			padding-left: 16px;
+			border-left: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+		}
 	}
 </style>
