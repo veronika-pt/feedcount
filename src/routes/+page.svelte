@@ -9,6 +9,7 @@
 		getRemainingFormulaMl,
 		isFormulaConsumedAboveEstimate
 	} from '$lib/calculations/remainingFormula.js';
+	import { getBottleDistributionSuggestions } from '$lib/calculations/bottleDistribution.js';
 	import { createDailyInputState } from '$lib/state/dailyInputState.svelte.js';
 
 	const appName = 'FeedCount';
@@ -35,11 +36,55 @@
 					dailyInputState.dailyInput.formulaConsumedMl
 				)
 	);
+	const bottleDistributionSuggestions = $derived(
+		remainingFormulaMl === null
+			? []
+			: getBottleDistributionSuggestions({
+					remainingFormulaMl,
+					bottleSizesMl: $setup.bottleSizesMl
+				})
+	);
 
 	onMount(() => {
 		initialiseSetup();
 		dailyInputState.load();
 	});
+
+	/**
+	 * @param {'closest-to-target' | 'small-buffer-above-target'} suggestionType
+	 * @returns {string}
+	 */
+	function getSuggestionLabel(suggestionType) {
+		if (suggestionType === 'closest-to-target') {
+			return 'Closest to target';
+		}
+
+		return 'Small buffer above target';
+	}
+
+	/**
+	 * @param {number[]} bottlesMl
+	 * @returns {string}
+	 */
+	function formatBottleCombination(bottlesMl) {
+		return bottlesMl.map((bottleMl) => `${bottleMl} ml`).join(' + ');
+	}
+
+	/**
+	 * @param {number} differenceMl
+	 * @returns {string}
+	 */
+	function formatDifference(differenceMl) {
+		if (differenceMl === 0) {
+			return 'Matches the remaining estimate.';
+		}
+
+		if (differenceMl > 0) {
+			return `${differenceMl} ml above the remaining estimate.`;
+		}
+
+		return `${Math.abs(differenceMl)} ml below the remaining estimate.`;
+	}
 </script>
 
 <svelte:head>
@@ -87,6 +132,36 @@
 					<p class="result-note">
 						Based on today’s total formula intake entered below. This is an estimate, not
 						a medical target.
+					</p>
+				{/if}
+			</div>
+
+			<div class="result">
+				<p class="result-label">Bottle ideas</p>
+
+				{#if bottleDistributionSuggestions.length > 0}
+					<div class="suggestions">
+						{#each bottleDistributionSuggestions as suggestion}
+							<div class="suggestion">
+								<p class="suggestion-label">{getSuggestionLabel(suggestion.type)}</p>
+								<p class="suggestion-value">
+									{formatBottleCombination(suggestion.bottlesMl)}
+								</p>
+								<p class="suggestion-note">
+									Total: {suggestion.totalMl} ml. {formatDifference(suggestion.differenceMl)}
+								</p>
+							</div>
+						{/each}
+					</div>
+
+					<p class="result-note">
+						These are practical bottle estimates using your saved bottle sizes, not a
+						strict feeding plan.
+					</p>
+				{:else}
+					<p class="result-note">
+						No useful bottle suggestion yet. Add remaining formula for today and check
+						that bottle sizes are saved in setup.
 					</p>
 				{/if}
 			</div>
@@ -179,6 +254,42 @@
 
 	.result-note {
 		margin: 8px 0 0;
+		font-size: 0.85rem;
+		line-height: 1.4;
+		color: var(--color-text-muted);
+	}
+
+	.suggestions {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin-top: 12px;
+	}
+
+	.suggestion {
+		padding: 12px;
+		border-radius: 12px;
+		background: var(--color-card-bg);
+	}
+
+	.suggestion-label {
+		margin: 0;
+		font-size: 0.78rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: var(--color-text-muted);
+	}
+
+	.suggestion-value {
+		margin: 6px 0 0;
+		font-size: 1.1rem;
+		font-weight: 800;
+		color: var(--color-text-primary);
+	}
+
+	.suggestion-note {
+		margin: 6px 0 0;
 		font-size: 0.85rem;
 		line-height: 1.4;
 		color: var(--color-text-muted);
