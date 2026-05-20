@@ -53,23 +53,17 @@
 					feedCount: dailyInputState.dailyInput.formulaFeedsLeftToday
 				})
 	);
+	const primaryBottleDistributionSuggestion = $derived(
+		bottleDistributionSuggestions[0] ?? null
+	);
+	const otherBottleDistributionSuggestions = $derived(
+		bottleDistributionSuggestions.slice(1)
+	);
 
 	onMount(() => {
 		initialiseSetup();
 		dailyInputState.load();
 	});
-
-	/**
-	 * @param {'closest-to-target' | 'small-buffer-above-target'} suggestionType
-	 * @returns {string}
-	 */
-	function getSuggestionLabel(suggestionType) {
-		if (suggestionType === 'closest-to-target') {
-			return 'Closest option';
-		}
-
-		return 'Small buffer';
-	}
 
 	/**
 	 * @param {number[]} bottlesMl
@@ -85,14 +79,14 @@
 	 */
 	function formatDifference(differenceMl) {
 		if (differenceMl === 0) {
-			return 'Matches today’s estimate.';
+			return 'Matches today’s estimate';
 		}
 
 		if (differenceMl > 0) {
-			return `About ${differenceMl} ml above today’s estimate.`;
+			return `About ${differenceMl} ml above today’s estimate`;
 		}
 
-		return `About ${Math.abs(differenceMl)} ml below today’s estimate.`;
+		return `About ${Math.abs(differenceMl)} ml below today’s estimate`;
 	}
 </script>
 
@@ -164,22 +158,42 @@
 				<p class="body-text">
 					Enter how many formula feeds are left today to get bottle ideas.
 				</p>
-			{:else if bottleDistributionSuggestions.length > 0}
+			{:else if primaryBottleDistributionSuggestion}
 				<div class="suggestions">
-					{#each bottleDistributionSuggestions as suggestion}
-						<div class="suggestion">
-							<p class="suggestion-label">{getSuggestionLabel(suggestion.type)}</p>
-							<p class="suggestion-value">
-								{formatBottleCombination(suggestion.bottlesMl)}
-							</p>
-							<p class="body-text">
-								Total: {suggestion.totalMl} ml • {formatDifference(suggestion.differenceMl)}
-							</p>
-						</div>
-					{/each}
+					<div class="suggestion">
+						<p class="suggestion-value">
+							{formatBottleCombination(primaryBottleDistributionSuggestion.bottlesMl)}
+						</p>
+						<p class="body-text">
+							Total: {primaryBottleDistributionSuggestion.totalMl} ml • {formatDifference(
+								primaryBottleDistributionSuggestion.differenceMl
+							)}
+						</p>
+					</div>
 				</div>
 
-				<p class="body-text">Practical bottle ideas using your saved bottle sizes.</p>
+				<p class="body-text">A practical bottle idea using your saved bottle sizes.</p>
+
+				{#if otherBottleDistributionSuggestions.length > 0}
+					<details class="other-options">
+						<summary>See other options</summary>
+
+						<div class="other-suggestions">
+							{#each otherBottleDistributionSuggestions as suggestion}
+								<div class="suggestion secondary-suggestion">
+									<p class="suggestion-value">
+										{formatBottleCombination(suggestion.bottlesMl)}
+									</p>
+									<p class="body-text">
+										Total: {suggestion.totalMl} ml • {formatDifference(
+											suggestion.differenceMl
+										)}
+									</p>
+								</div>
+							{/each}
+						</div>
+					</details>
+				{/if}
 			{:else}
 				<p class="body-text">
 					No useful bottle suggestion yet. Check that bottle sizes are saved in setup.
@@ -343,21 +357,56 @@
 		border-bottom: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
 	}
 
-	.suggestion-label {
-		margin: 0;
-		font-size: 0.86rem;
-		font-weight: 500;
-		line-height: 1.35;
-		color: var(--color-text-muted);
-	}
-
 	.suggestion-value {
-		margin: 6px 0 0;
+		margin: 0;
 		font-size: 1.25rem;
 		font-weight: 600;
 		line-height: 1.2;
 		letter-spacing: -0.015em;
 		color: var(--color-text-primary);
+	}
+
+	.other-options {
+		margin-top: 12px;
+	}
+
+	.other-options > summary {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		min-height: auto;
+		padding: 0;
+		font-size: 0.9rem;
+		font-weight: 600;
+		line-height: 1.4;
+		color: var(--color-text-secondary);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.other-options > summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.other-options > summary::after {
+		content: '⌄';
+		font-size: 0.95rem;
+		font-weight: 400;
+		color: var(--color-text-muted);
+		transition: transform 0.15s ease;
+	}
+
+	.other-options[open] > summary::after {
+		transform: rotate(180deg);
+	}
+
+	.other-suggestions {
+		margin-top: 10px;
+		border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+	}
+
+	.secondary-suggestion .suggestion-value {
+		font-size: 1.05rem;
 	}
 
 	.about-card {
@@ -366,7 +415,7 @@
 		background: var(--color-card-bg);
 	}
 
-	summary {
+	.about-card > summary {
 		min-height: 58px;
 		display: flex;
 		align-items: center;
@@ -381,11 +430,11 @@
 		list-style: none;
 	}
 
-	summary::-webkit-details-marker {
+	.about-card > summary::-webkit-details-marker {
 		display: none;
 	}
 
-	summary::after {
+	.about-card > summary::after {
 		content: '⌄';
 		font-size: 1.1rem;
 		font-weight: 400;
@@ -393,7 +442,7 @@
 		transition: transform 0.15s ease;
 	}
 
-	.about-card[open] summary::after {
+	.about-card[open] > summary::after {
 		transform: rotate(180deg);
 	}
 

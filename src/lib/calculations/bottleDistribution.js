@@ -27,8 +27,9 @@
  * It only helps estimate practical bottle combinations using saved bottle sizes
  * and the number of formula feeds planned for the rest of the day.
  *
- * The helper prefers combinations that are close to the remaining amount
- * and reasonably even across bottles.
+ * The helper prefers a practical option slightly above the remaining estimate
+ * when possible, because that is more useful for real feeding situations than
+ * a mathematically closest option that falls slightly below the estimate.
  *
  * @param {BottleDistributionInput} input
  * @returns {BottleDistributionSuggestion[]}
@@ -50,21 +51,10 @@ export function getBottleDistributionSuggestions(input) {
 
 	const combinations = getSimpleBottleCombinations(bottleSizesMl, feedCount);
 
-	const closestToTarget = findClosestToTarget(combinations, remainingFormulaMl);
 	const smallBufferAboveTarget = findSmallBufferAboveTarget(combinations, remainingFormulaMl);
+	const closestToTarget = findClosestToTarget(combinations, remainingFormulaMl);
 
-	/** @type {BottleDistributionSuggestion[]} */
-	const suggestions = [];
-
-	if (closestToTarget) {
-		suggestions.push(closestToTarget);
-	}
-
-	if (smallBufferAboveTarget) {
-		suggestions.push(smallBufferAboveTarget);
-	}
-
-	return suggestions;
+	return getUniqueSuggestions([smallBufferAboveTarget, closestToTarget]);
 }
 
 /**
@@ -133,6 +123,41 @@ function getBottleSpreadMl(bottlesMl) {
  * @param {number} remainingFormulaMl
  * @returns {BottleDistributionSuggestion | null}
  */
+function findSmallBufferAboveTarget(combinations, remainingFormulaMl) {
+	const buffer = [...combinations]
+		.filter((combination) => combination.totalMl > remainingFormulaMl)
+		.sort((a, b) => {
+			const differenceA = a.totalMl - remainingFormulaMl;
+			const differenceB = b.totalMl - remainingFormulaMl;
+
+			if (differenceA !== differenceB) {
+				return differenceA - differenceB;
+			}
+
+			if (a.spreadMl !== b.spreadMl) {
+				return a.spreadMl - b.spreadMl;
+			}
+
+			return a.totalMl - b.totalMl;
+		})[0];
+
+	if (!buffer) {
+		return null;
+	}
+
+	return {
+		type: 'small-buffer-above-target',
+		bottlesMl: buffer.bottlesMl,
+		totalMl: buffer.totalMl,
+		differenceMl: buffer.totalMl - remainingFormulaMl
+	};
+}
+
+/**
+ * @param {BottleCombination[]} combinations
+ * @param {number} remainingFormulaMl
+ * @returns {BottleDistributionSuggestion | null}
+ */
 function findClosestToTarget(combinations, remainingFormulaMl) {
 	const closest = [...combinations].sort((a, b) => {
 		const differenceA = Math.abs(a.totalMl - remainingFormulaMl);
@@ -162,36 +187,29 @@ function findClosestToTarget(combinations, remainingFormulaMl) {
 }
 
 /**
- * @param {BottleCombination[]} combinations
- * @param {number} remainingFormulaMl
- * @returns {BottleDistributionSuggestion | null}
+ * @param {(BottleDistributionSuggestion | null)[]} suggestions
+ * @returns {BottleDistributionSuggestion[]}
  */
-function findSmallBufferAboveTarget(combinations, remainingFormulaMl) {
-	const buffer = [...combinations]
-		.filter((combination) => combination.totalMl > remainingFormulaMl)
-		.sort((a, b) => {
-			const differenceA = a.totalMl - remainingFormulaMl;
-			const differenceB = b.totalMl - remainingFormulaMl;
+function getUniqueSuggestions(suggestions) {
+	const seenSuggestionKeys = new Set();
 
-			if (differenceA !== differenceB) {
-				return differenceA - differenceB;
-			}
+	/** @type {BottleDistributionSuggestion[]} */
+	const uniqueSuggestions = [];
 
-			if (a.spreadMl !== b.spreadMl) {
-				return a.spreadMl - b.spreadMl;
-			}
+	for (const suggestion of suggestions) {
+		if (!suggestion) {
+			continue;
+		}
 
-			return a.totalMl - b.totalMl;
-		})[0];
+		const suggestionKey = `${suggestion.bottlesMl.join('+')}|${suggestion.totalMl}`;
 
-	if (!buffer) {
-		return null;
+		if (seenSuggestionKeys.has(suggestionKey)) {
+			continue;
+		}
+
+		seenSuggestionKeys.add(suggestionKey);
+		uniqueSuggestions.push(suggestion);
 	}
 
-	return {
-		type: 'small-buffer-above-target',
-		bottlesMl: buffer.bottlesMl,
-		totalMl: buffer.totalMl,
-		differenceMl: buffer.totalMl - remainingFormulaMl
-	};
+	return uniqueSuggestions;
 }
