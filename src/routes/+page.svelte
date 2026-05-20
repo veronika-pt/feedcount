@@ -11,14 +11,22 @@
 	} from '$lib/calculations/remainingFormula.js';
 	import { getBottleDistributionSuggestions } from '$lib/calculations/bottleDistribution.js';
 	import { createDailyInputState } from '$lib/state/dailyInputState.svelte.js';
+	import { validateSetup } from '$lib/validation/setupValidation.js';
+	import { validateDailyInput } from '$lib/validation/dailyInputValidation.js';
 
 	const appName = 'FeedCount';
 
 	const dailyInputState = createDailyInputState();
 
-	const dailyEnergyTarget = $derived(getDailyEnergyTarget($setup));
+	const setupValidation = $derived(validateSetup($setup));
+	const dailyInputValidation = $derived(validateDailyInput(dailyInputState.dailyInput));
+	const canShowResults = $derived(setupValidation.isValid && dailyInputValidation.isValid);
+
+	const dailyEnergyTarget = $derived(canShowResults ? getDailyEnergyTarget($setup) : null);
 	const dailyFormulaTargetMl = $derived(
-		getDailyFormulaTargetMl(dailyEnergyTarget?.kcalPerDay, $setup.formulaKcalPer100ml)
+		canShowResults
+			? getDailyFormulaTargetMl(dailyEnergyTarget?.kcalPerDay, $setup.formulaKcalPer100ml)
+			: null
 	);
 	const remainingFormulaMl = $derived(
 		dailyFormulaTargetMl === null
@@ -111,7 +119,34 @@
 			FeedCount gives practical estimates only. It does not replace medical advice.
 		</p>
 
-		{#if dailyFormulaTargetMl}
+		{#if !setupValidation.isValid}
+			<div class="empty-state">
+				<p class="empty-state-title">Complete your setup</p>
+				<p class="empty-state-text">
+					FeedCount needs a few basic details before it can estimate today’s formula.
+				</p>
+
+				<ul class="empty-state-list">
+					{#each setupValidation.messages as message}
+						<li>{message}</li>
+					{/each}
+				</ul>
+			</div>
+		{:else if !dailyInputValidation.isValid}
+			<div class="empty-state">
+				<p class="empty-state-title">Check today’s input</p>
+				<p class="empty-state-text">
+					Today’s formula intake needs a valid amount before FeedCount can calculate what
+					remains.
+				</p>
+
+				<ul class="empty-state-list">
+					{#each dailyInputValidation.messages as message}
+						<li>{message}</li>
+					{/each}
+				</ul>
+			</div>
+		{:else if dailyFormulaTargetMl !== null}
 			<div class="result">
 				<p class="result-label">Estimated daily formula target</p>
 				<p class="result-value">{dailyFormulaTargetMl} ml</p>
@@ -170,9 +205,12 @@
 				{/if}
 			</div>
 		{:else}
-			<p class="note">
-				Add valid setup values to calculate the estimated daily formula target.
-			</p>
+			<div class="empty-state">
+				<p class="empty-state-title">Formula estimate is not ready yet</p>
+				<p class="empty-state-text">
+					Check the setup values below, then save again to refresh the estimate.
+				</p>
+			</div>
 		{/if}
 	</section>
 
@@ -232,6 +270,35 @@
 		font-size: 0.95rem;
 		line-height: 1.4;
 		color: var(--color-text-muted);
+	}
+
+	.empty-state {
+		margin-top: 20px;
+		padding: 16px;
+		border-radius: 16px;
+		background: var(--color-page-bg);
+	}
+
+	.empty-state-title {
+		margin: 0;
+		font-size: 0.95rem;
+		font-weight: 800;
+		color: var(--color-text-primary);
+	}
+
+	.empty-state-text {
+		margin: 8px 0 0;
+		font-size: 0.9rem;
+		line-height: 1.4;
+		color: var(--color-text-muted);
+	}
+
+	.empty-state-list {
+		margin: 12px 0 0;
+		padding-left: 20px;
+		font-size: 0.9rem;
+		line-height: 1.5;
+		color: var(--color-text-secondary);
 	}
 
 	.result {
