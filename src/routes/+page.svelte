@@ -5,6 +5,10 @@
 	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
 	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
 	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
+	import {
+		getRemainingFormulaMl,
+		isFormulaConsumedAboveEstimate
+	} from '$lib/calculations/remainingFormula.js';
 	import { createDailyInputState } from '$lib/state/dailyInputState.svelte.js';
 
 	const appName = 'FeedCount';
@@ -18,7 +22,18 @@
 	const remainingFormulaMl = $derived(
 		dailyFormulaTargetMl === null
 			? null
-			: Math.max(0, dailyFormulaTargetMl - dailyInputState.dailyInput.formulaConsumedMl)
+			: getRemainingFormulaMl(
+					dailyFormulaTargetMl,
+					dailyInputState.dailyInput.formulaConsumedMl
+				)
+	);
+	const isAboveFormulaEstimate = $derived(
+		dailyFormulaTargetMl === null
+			? false
+			: isFormulaConsumedAboveEstimate(
+					dailyFormulaTargetMl,
+					dailyInputState.dailyInput.formulaConsumedMl
+				)
 	);
 
 	onMount(() => {
@@ -62,9 +77,18 @@
 			<div class="result">
 				<p class="result-label">Estimated formula remaining today</p>
 				<p class="result-value">{remainingFormulaMl} ml</p>
-				<p class="result-note">
-					Based on today’s total formula intake entered below.
-				</p>
+
+				{#if isAboveFormulaEstimate}
+					<p class="result-note">
+						Today’s entered formula is already above the estimate. This can happen – the
+						number is only a practical guide.
+					</p>
+				{:else}
+					<p class="result-note">
+						Based on today’s total formula intake entered below. This is an estimate, not
+						a medical target.
+					</p>
+				{/if}
 			</div>
 		{:else}
 			<p class="note">
