@@ -9,6 +9,7 @@
 	let { setup, onSave } = $props();
 
 	let saveStatus = $state('idle');
+	let bottleSizesInput = $state(defaultSetup.bottleSizesMl.join(', '));
 
 	let draftSetup = $state({
 		...defaultSetup,
@@ -17,12 +18,16 @@
 	});
 
 	$effect(() => {
+		const nextBottleSizes = setup.bottleSizesMl ?? defaultSetup.bottleSizesMl;
+
 		draftSetup = {
 			...defaultSetup,
 			...setup,
 			currentWeightKg: String(setup.currentWeightKg ?? defaultSetup.currentWeightKg),
-			bottleSizesMl: [...(setup.bottleSizesMl ?? defaultSetup.bottleSizesMl)]
+			bottleSizesMl: [...nextBottleSizes]
 		};
+
+		bottleSizesInput = nextBottleSizes.join(', ');
 	});
 
 	function markAsChanged() {
@@ -50,13 +55,31 @@
 		draftSetup.birthDate = formatBirthDateInput(input.value);
 	}
 
+	/**
+	 * @param {string} value
+	 * @returns {number[]}
+	 */
+	function parseBottleSizes(value) {
+		return value
+			.split(',')
+			.map((size) => Number(size.trim()))
+			.filter((size) => Number.isFinite(size) && size > 0);
+	}
+
 	function saveForm() {
+		const bottleSizesMl = parseBottleSizes(bottleSizesInput);
+
 		onSave({
 			...draftSetup,
 			currentWeightKg: Number(draftSetup.currentWeightKg.replace(',', '.')),
 			formulaKcalPer100ml: Number(draftSetup.formulaKcalPer100ml),
-			bottleSizesMl: draftSetup.bottleSizesMl.map(Number)
+			bottleSizesMl: bottleSizesMl.length > 0 ? bottleSizesMl : defaultSetup.bottleSizesMl
 		});
+
+		bottleSizesInput =
+			bottleSizesMl.length > 0
+				? bottleSizesMl.join(', ')
+				: defaultSetup.bottleSizesMl.join(', ');
 
 		saveStatus = 'saved';
 	}
@@ -163,6 +186,18 @@
 			/>
 		</label>
 
+		<label>
+			<span>Bottle sizes, ml</span>
+			<input
+				bind:value={bottleSizesInput}
+				type="text"
+				inputmode="numeric"
+				autocomplete="off"
+				placeholder="90, 120, 150"
+			/>
+			<small>Used for bottle ideas based on the sizes you normally prepare.</small>
+		</label>
+
 		<button type="submit" class:saved={saveStatus === 'saved'}>
 			{saveStatus === 'saved' ? 'Saved ✓' : 'Save setup'}
 		</button>
@@ -221,6 +256,13 @@
 		gap: 0.4rem;
 		font-weight: 650;
 		color: var(--color-text-primary);
+	}
+
+	small {
+		font-size: 0.85rem;
+		font-weight: 500;
+		line-height: 1.4;
+		color: var(--color-text-muted);
 	}
 
 	.field {
