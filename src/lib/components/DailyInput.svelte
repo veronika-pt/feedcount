@@ -8,6 +8,8 @@
 
 	let formulaConsumedInput = $state('0');
 
+	const feedsLeftToday = $derived(dailyInput.formulaFeedsLeftToday ?? 0);
+
 	$effect(() => {
 		formulaConsumedInput = String(dailyInput.formulaConsumedMl ?? 0);
 	});
@@ -51,10 +53,10 @@
 	<h2>Today’s feedings</h2>
 
 	<div class="daily-controls">
-		<label class="field">
-			<span class="field-label">Formula consumed today</span>
+		<label class="control-group">
+			<span class="control-label">Formula consumed today</span>
 
-			<div class="input-row">
+			<div class="compact-input">
 				<input
 					type="number"
 					min="0"
@@ -69,20 +71,21 @@
 			</div>
 		</label>
 
-		<div class="field">
-			<span class="field-label">Feeds left today</span>
+		<div class="control-group">
+			<span class="control-label">Feeds left today</span>
 
 			<div class="stepper" aria-label="Formula feeds left today">
 				<button
 					type="button"
 					class="stepper-button"
 					aria-label="Decrease feeds left today"
+					disabled={feedsLeftToday === 0}
 					onclick={() => updateFeedsLeft(-1)}
 				>
 					−
 				</button>
 
-				<span class="stepper-value">{dailyInput.formulaFeedsLeftToday ?? 0}</span>
+				<span class="stepper-value">{feedsLeftToday}</span>
 
 				<button
 					type="button"
@@ -102,7 +105,7 @@
 		width: 100%;
 		max-width: 420px;
 		display: grid;
-		gap: 18px;
+		gap: 16px;
 		padding: 18px;
 		border: 1px solid color-mix(in srgb, var(--color-text-primary) 8%, transparent);
 		border-radius: 24px;
@@ -125,43 +128,46 @@
 		gap: 14px;
 	}
 
-	.field {
+	.control-group {
 		display: grid;
 		gap: 8px;
+		min-width: 0;
 	}
 
-	.field-label {
-		font-size: 0.9rem;
+	.control-label {
+		font-size: 0.88rem;
 		font-weight: 500;
 		line-height: 1.35;
 		color: var(--color-text-secondary);
 	}
 
-	.input-row,
+	.compact-input,
 	.stepper {
-		min-height: 54px;
-		display: flex;
+		min-height: 52px;
+		display: inline-flex;
 		align-items: center;
 		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
-		border-radius: 16px;
+		border-radius: 999px;
 		background: color-mix(in srgb, var(--color-card-bg) 82%, var(--color-page-bg) 18%);
 	}
 
-	.input-row {
-		padding: 0 14px;
+	.compact-input {
+		width: fit-content;
+		max-width: 100%;
+		padding: 0 16px;
 		gap: 8px;
 	}
 
 	input {
-		width: 100%;
-		min-width: 0;
+		width: 4.5ch;
+		min-width: 4.5ch;
 		border: 0;
 		background: transparent;
 		font: inherit;
-		font-size: 1.35rem;
+		font-size: 1.3rem;
 		font-weight: 600;
 		line-height: 1;
-		letter-spacing: 0;
+		letter-spacing: -0.01em;
 		color: var(--color-text-primary);
 		outline: none;
 		appearance: textfield;
@@ -174,14 +180,16 @@
 	}
 
 	.unit {
-		font-size: 0.98rem;
+		font-size: 0.96rem;
 		font-weight: 500;
 		color: var(--color-text-secondary);
 	}
 
 	.stepper {
-		justify-content: space-between;
-		padding: 7px;
+		width: fit-content;
+		max-width: 100%;
+		gap: 14px;
+		padding: 6px;
 	}
 
 	.stepper-button {
@@ -201,7 +209,12 @@
 		cursor: pointer;
 	}
 
-	.stepper-button:active {
+	.stepper-button:disabled {
+		cursor: not-allowed;
+		opacity: 0.35;
+	}
+
+	.stepper-button:not(:disabled):active {
 		transform: scale(0.98);
 	}
 
@@ -220,7 +233,7 @@
 			gap: 16px;
 		}
 
-		.daily-controls > .field + .field {
+		.daily-controls > .control-group + .control-group {
 			padding-left: 16px;
 			border-left: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
 		}
