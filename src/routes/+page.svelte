@@ -3,6 +3,7 @@
 	import SetupForm from '$lib/components/SetupForm.svelte';
 	import DailyInput from '$lib/components/DailyInput.svelte';
 	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
+	import { getCompletedAgeMonths } from '$lib/calculations/age.js';
 	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
 	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
 	import {
@@ -59,6 +60,14 @@
 	const otherBottleDistributionSuggestions = $derived(
 		bottleDistributionSuggestions.slice(1)
 	);
+	const dailyEstimateMetadata = $derived(
+		[
+			formatBabySexLabel($setup.babySex),
+			formatAgeLabel($setup.birthDate),
+			formatWeightLabel($setup.currentWeightKg),
+			formatFeedingModeLabel($setup.feedingMode)
+		].filter(Boolean)
+	);
 
 	onMount(() => {
 		initialiseSetup();
@@ -88,6 +97,64 @@
 
 		return `About ${Math.abs(differenceMl)} ml below today’s estimate`;
 	}
+
+	/**
+	 * @param {import('$lib/data/setupDefaults.js').BabySex} babySex
+	 * @returns {string}
+	 */
+	function formatBabySexLabel(babySex) {
+		if (babySex === 'female') {
+			return 'Girl';
+		}
+
+		if (babySex === 'male') {
+			return 'Boy';
+		}
+
+		return 'Sex unspecified';
+	}
+
+	/**
+	 * @param {string} birthDate
+	 * @returns {string}
+	 */
+	function formatAgeLabel(birthDate) {
+		const completedAgeMonths = getCompletedAgeMonths(birthDate);
+
+		if (completedAgeMonths === null) {
+			return '';
+		}
+
+		if (completedAgeMonths === 1) {
+			return '1 month';
+		}
+
+		return `${completedAgeMonths} months`;
+	}
+
+	/**
+	 * @param {number} weightKg
+	 * @returns {string}
+	 */
+	function formatWeightLabel(weightKg) {
+		if (!Number.isFinite(weightKg) || weightKg <= 0) {
+			return '';
+		}
+
+		return `${weightKg.toFixed(1)} kg`;
+	}
+
+	/**
+	 * @param {import('$lib/data/setupDefaults.js').FeedingMode} feedingMode
+	 * @returns {string}
+	 */
+	function formatFeedingModeLabel(feedingMode) {
+		if (feedingMode === 'formulaOnly') {
+			return 'formula only';
+		}
+
+		return 'mixed feeding';
+	}
 </script>
 
 <svelte:head>
@@ -112,7 +179,7 @@
 		<section class="card">
 			<p class="card-title">Complete your setup</p>
 			<p class="body-text">
-	Add the missing setup details below to see today’s estimate.
+				Add the missing setup details below to see today’s estimate.
 			</p>
 
 			<ul class="message-list">
@@ -169,7 +236,6 @@
 					</div>
 				</div>
 
-
 				{#if otherBottleDistributionSuggestions.length > 0}
 					<details class="other-options">
 						<summary>See other options</summary>
@@ -200,8 +266,13 @@
 		<section class="card reference-card">
 			<p class="card-title">Daily estimate</p>
 			<p class="secondary-value">{dailyFormulaTargetMl} ml</p>
-		</section>
 
+			{#if dailyEstimateMetadata.length > 0}
+				<p class="estimate-metadata">
+					{dailyEstimateMetadata.join(' • ')}
+				</p>
+			{/if}
+		</section>
 	{:else}
 		<section class="card">
 			<p class="card-title">Formula estimate is not ready yet</p>
@@ -320,6 +391,15 @@
 		line-height: 1;
 		letter-spacing: -0.015em;
 		color: var(--color-text-primary);
+	}
+
+	.estimate-metadata {
+		margin: 8px 0 0;
+		font-size: 0.85rem;
+		font-weight: 400;
+		line-height: 1.45;
+		color: var(--color-text-muted);
+		overflow-wrap: anywhere;
 	}
 
 	.body-text {
