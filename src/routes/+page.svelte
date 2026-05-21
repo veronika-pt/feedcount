@@ -1,8 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
-	import SetupForm from '$lib/components/SetupForm.svelte';
 	import DailyInput from '$lib/components/DailyInput.svelte';
-	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
+	import { initialiseSetup, setup } from '$lib/stores/setupStore.js';
 	import { getCompletedAgeMonths } from '$lib/calculations/age.js';
 	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
 	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
@@ -167,10 +166,14 @@
 
 <main class="page">
 	<header class="app-header">
-		<h1>{appName}</h1>
-		<p class="intro">
-			Practical estimates for planning today’s feeds. Not medical advice.
-		</p>
+		<div>
+			<h1>{appName}</h1>
+			<p class="intro">
+				Practical estimates for planning today’s feeds. Not medical advice.
+			</p>
+		</div>
+
+		<a class="settings-link" href="/settings">Settings</a>
 	</header>
 
 	<DailyInput dailyInput={dailyInputState.dailyInput} onChange={dailyInputState.update} />
@@ -179,7 +182,7 @@
 		<section class="card">
 			<p class="card-title">Complete your setup</p>
 			<p class="body-text">
-				Add the missing setup details below to see today’s estimate.
+				Add the missing setup details in Settings to see today’s estimate.
 			</p>
 
 			<ul class="message-list">
@@ -187,6 +190,8 @@
 					<li>{message}</li>
 				{/each}
 			</ul>
+
+			<a class="inline-settings-link" href="/settings">Open Settings</a>
 		</section>
 	{:else if !dailyInputValidation.isValid}
 		<section class="card">
@@ -258,7 +263,7 @@
 				{/if}
 			{:else}
 				<p class="body-text">
-					Check saved bottle sizes in setup.
+					Check saved bottle sizes in Settings.
 				</p>
 			{/if}
 		</section>
@@ -277,8 +282,10 @@
 		<section class="card">
 			<p class="card-title">Formula estimate is not ready yet</p>
 			<p class="body-text">
-				Check setup below, then save again.
+				Check Settings, then save again.
 			</p>
+
+			<a class="inline-settings-link" href="/settings">Open Settings</a>
 		</section>
 	{/if}
 
@@ -296,10 +303,6 @@
 			</p>
 		</div>
 	</details>
-
-	<section class="setup-section">
-		<SetupForm setup={$setup} onSave={updateSetup} />
-	</section>
 </main>
 
 <style>
@@ -317,6 +320,10 @@
 		width: 100%;
 		max-width: 420px;
 		padding: 6px 2px 14px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
 	}
 
 	h1 {
@@ -334,6 +341,45 @@
 		font-weight: 400;
 		line-height: 1.45;
 		color: var(--color-text-secondary);
+	}
+
+	.settings-link {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 34px;
+		padding: 0 12px;
+		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+		border-radius: 999px;
+		background: var(--color-card-bg);
+		color: var(--color-text-secondary);
+		font-size: 0.86rem;
+		font-weight: 600;
+		line-height: 1;
+		text-decoration: none;
+		box-shadow: 0 4px 14px color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+	}
+
+	.settings-link:hover {
+		color: var(--color-text-primary);
+	}
+
+	.inline-settings-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 38px;
+		margin-top: 14px;
+		padding: 0 14px;
+		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-card-bg) 88%, white 12%);
+		color: var(--color-text-primary);
+		font-size: 0.9rem;
+		font-weight: 650;
+		line-height: 1;
+		text-decoration: none;
 	}
 
 	.card {
@@ -532,12 +578,6 @@
 	}
 
 	.about-content p + p {
-		margin-top: 10px;
-	}
-
-	.setup-section {
-		width: 100%;
-		max-width: 420px;
 		margin-top: 10px;
 	}
 </style>
