@@ -9,7 +9,8 @@
 	let { setup, onSave } = $props();
 
 	let saveStatus = $state('idle');
-	let bottleSizesInput = $state(defaultSetup.bottleSizesMl.join(', '));
+	let isAddingBottleSize = $state(false);
+	let newBottleSizeInput = $state('');
 
 	let draftSetup = $state({
 		...defaultSetup,
@@ -20,16 +21,18 @@
 
 	$effect(() => {
 		const nextBottleSizes = setup.bottleSizesMl ?? defaultSetup.bottleSizesMl;
+		const sortedBottleSizes = sortBottleSizes(nextBottleSizes);
 
 		draftSetup = {
 			...defaultSetup,
 			...setup,
 			feedingMode: 'formulaOnly',
 			currentWeightKg: String(setup.currentWeightKg ?? defaultSetup.currentWeightKg),
-			bottleSizesMl: [...nextBottleSizes]
+			bottleSizesMl: sortedBottleSizes.length > 0 ? sortedBottleSizes : [...defaultSetup.bottleSizesMl]
 		};
 
-		bottleSizesInput = nextBottleSizes.join(', ');
+		isAddingBottleSize = false;
+		newBottleSizeInput = '';
 	});
 
 	function markAsChanged() {
@@ -58,18 +61,105 @@
 	}
 
 	/**
-	 * @param {string} value
+	 * @param {number[]} bottleSizes
 	 * @returns {number[]}
 	 */
-	function parseBottleSizes(value) {
-		return value
-			.split(',')
-			.map((size) => Number(size.trim()))
-			.filter((size) => Number.isFinite(size) && size > 0);
+	function sortBottleSizes(bottleSizes) {
+		return [...new Set(bottleSizes)]
+			.filter((size) => Number.isFinite(size) && size > 0)
+			.sort((firstSize, secondSize) => firstSize - secondSize);
+	}
+
+	/**
+	 * @param {string} value
+	 * @returns {number | null}
+	 */
+	function parseBottleSize(value) {
+		const parsedValue = Number(value.trim().replace(',', '.'));
+
+		if (!Number.isFinite(parsedValue) || parsedValue <= 0) {
+			return null;
+		}
+
+		return Math.round(parsedValue);
+	}
+
+	function showBottleSizeInput() {
+		isAddingBottleSize = true;
+		newBottleSizeInput = '';
+	}
+
+	function hideBottleSizeInput() {
+		isAddingBottleSize = false;
+		newBottleSizeInput = '';
+	}
+
+	/**
+	 * @param {number[]} bottleSizesMl
+	 */
+	function saveBottleSizes(bottleSizesMl) {
+		const sortedBottleSizes = sortBottleSizes(bottleSizesMl);
+		const nextBottleSizes =
+			sortedBottleSizes.length > 0 ? sortedBottleSizes : [...defaultSetup.bottleSizesMl];
+
+		draftSetup.bottleSizesMl = [...nextBottleSizes];
+
+		onSave({
+			...draftSetup,
+			feedingMode: 'formulaOnly',
+			currentWeightKg: Number(draftSetup.currentWeightKg.replace(',', '.')),
+			formulaKcalPer100ml: Number(draftSetup.formulaKcalPer100ml),
+			bottleSizesMl: nextBottleSizes
+		});
+
+		saveStatus = 'saved';
+	}
+
+	function addBottleSize() {
+		const bottleSize = parseBottleSize(newBottleSizeInput);
+
+		if (!bottleSize || draftSetup.bottleSizesMl.includes(bottleSize)) {
+			return;
+		}
+
+		const nextBottleSizes = sortBottleSizes([...draftSetup.bottleSizesMl, bottleSize]);
+
+		draftSetup.bottleSizesMl = nextBottleSizes;
+		newBottleSizeInput = '';
+		isAddingBottleSize = false;
+
+		saveBottleSizes(nextBottleSizes);
+	}
+
+	/**
+	 * @param {KeyboardEvent} event
+	 */
+	function handleBottleSizeKeydown(event) {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			addBottleSize();
+		}
+
+		if (event.key === 'Escape') {
+			hideBottleSizeInput();
+		}
+	}
+
+	/**
+	 * @param {number} bottleSize
+	 */
+	function removeBottleSize(bottleSize) {
+		if (draftSetup.bottleSizesMl.length <= 1) {
+			return;
+		}
+
+		const nextBottleSizes = draftSetup.bottleSizesMl.filter((size) => size !== bottleSize);
+
+		saveBottleSizes(nextBottleSizes);
 	}
 
 	function saveForm() {
-		const bottleSizesMl = parseBottleSizes(bottleSizesInput);
+		const bottleSizesMl = sortBottleSizes(draftSetup.bottleSizesMl);
 
 		onSave({
 			...draftSetup,
@@ -79,10 +169,8 @@
 			bottleSizesMl: bottleSizesMl.length > 0 ? bottleSizesMl : defaultSetup.bottleSizesMl
 		});
 
-		bottleSizesInput =
-			bottleSizesMl.length > 0
-				? bottleSizesMl.join(', ')
-				: defaultSetup.bottleSizesMl.join(', ');
+		draftSetup.bottleSizesMl =
+			bottleSizesMl.length > 0 ? bottleSizesMl : [...defaultSetup.bottleSizesMl];
 
 		saveStatus = 'saved';
 	}
@@ -174,19 +262,59 @@
 			</section>
 
 			<section class="form-section" aria-labelledby="bottle-sizes-title">
-				<h2 id="bottle-sizes-title" class="sr-only">Bottle sizes</h2>
-
-				<label>
-					<span>Bottle sizes, ml</span>
-					<input
-						bind:value={bottleSizesInput}
-						type="text"
-						inputmode="numeric"
-						autocomplete="off"
-						placeholder="90, 120, 150"
-					/>
+				<div class="field-header">
+					<h2 id="bottle-sizes-title">Bottle sizes</h2>
 					<small>Used for bottle ideas based on the sizes you normally prepare.</small>
-				</label>
+				</div>
+
+				<div class="bottle-size-list" aria-label="Saved bottle sizes">
+					{#each draftSetup.bottleSizesMl as bottleSize}
+						<button
+							class="bottle-size-chip"
+							type="button"
+							aria-label={`Remove ${bottleSize} ml bottle size`}
+							disabled={draftSetup.bottleSizesMl.length <= 1}
+							onclick={() => removeBottleSize(bottleSize)}
+						>
+							<span>{bottleSize} ml</span>
+							<span aria-hidden="true">×</span>
+						</button>
+					{/each}
+				</div>
+
+				{#if isAddingBottleSize}
+					<div class="add-bottle-size-row">
+						<label class="add-bottle-size-field">
+							<span class="sr-only">New bottle size</span>
+							<div class="input-with-unit">
+								<input
+									bind:value={newBottleSizeInput}
+									type="text"
+									inputmode="numeric"
+									autocomplete="off"
+									placeholder="120"
+									onkeydown={handleBottleSizeKeydown}
+								/>
+								<span>ml</span>
+							</div>
+						</label>
+
+						<button class="inline-button" type="button" onclick={addBottleSize}>Add</button>
+
+						<button
+							class="inline-button secondary"
+							type="button"
+							aria-label="Cancel adding bottle size"
+							onclick={hideBottleSizeInput}
+						>
+							Cancel
+						</button>
+					</div>
+				{:else}
+					<button class="add-bottle-size-button" type="button" onclick={showBottleSizeInput}>
+						+ Add bottle size
+					</button>
+				{/if}
 			</section>
 
 			<section class="about-section" aria-labelledby="about-title">
@@ -199,7 +327,7 @@
 		</div>
 
 		<div class="save-bar">
-			<button type="submit" class:saved={saveStatus === 'saved'}>
+			<button class="save-button" type="submit" class:saved={saveStatus === 'saved'}>
 				{saveStatus === 'saved' ? 'Saved ✓' : 'Save settings'}
 			</button>
 		</div>
@@ -292,6 +420,122 @@
 		color: var(--color-text-primary);
 	}
 
+	.field-header {
+		display: grid;
+		gap: 0.35rem;
+	}
+
+	.field-header h2 {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 650;
+		line-height: 1.25;
+		color: var(--color-text-primary);
+	}
+
+	.bottle-size-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.bottle-size-chip {
+		display: inline-flex;
+		width: auto;
+		min-height: 2.25rem;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0 0.75rem;
+		border: 1px solid rgb(0 0 0 / 0.1);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--color-card-bg) 82%, var(--color-button-bg) 18%);
+		box-shadow: none;
+		color: var(--color-text-primary);
+		font-size: 0.9rem;
+		font-weight: 650;
+		cursor: pointer;
+	}
+
+	.bottle-size-chip span:last-child {
+		color: var(--color-text-muted);
+		font-size: 1rem;
+		line-height: 1;
+	}
+
+	.bottle-size-chip:disabled {
+		cursor: not-allowed;
+		opacity: 0.55;
+	}
+
+	.add-bottle-size-button {
+		width: fit-content;
+		min-height: 2.4rem;
+		padding: 0 0.85rem;
+		border: 1px solid rgb(0 0 0 / 0.1);
+		border-radius: 999px;
+		background: transparent;
+		box-shadow: none;
+		color: var(--color-text-secondary);
+		font-size: 0.9rem;
+		font-weight: 650;
+		cursor: pointer;
+	}
+
+	.add-bottle-size-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		gap: 0.5rem;
+		align-items: center;
+	}
+
+	.add-bottle-size-field {
+		gap: 0;
+	}
+
+	.input-with-unit {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		border: 1px solid rgb(0 0 0 / 0.12);
+		border-radius: 0.9rem;
+		background: var(--color-card-bg);
+		overflow: hidden;
+	}
+
+	.input-with-unit input {
+		min-height: 2.6rem;
+		border: 0;
+		border-radius: 0;
+		padding-right: 0.35rem;
+	}
+
+	.input-with-unit span {
+		padding-right: 0.85rem;
+		color: var(--color-text-muted);
+		font-size: 0.9rem;
+		font-weight: 650;
+	}
+
+	.inline-button {
+		width: auto;
+		min-height: 2.6rem;
+		padding: 0 0.8rem;
+		border: 0;
+		border-radius: 0.85rem;
+		background: var(--color-button-bg);
+		box-shadow: none;
+		color: var(--color-button-text);
+		font-size: 0.9rem;
+		font-weight: 750;
+		cursor: pointer;
+	}
+
+	.inline-button.secondary {
+		border: 1px solid rgb(0 0 0 / 0.1);
+		background: transparent;
+		color: var(--color-text-secondary);
+	}
+
 	.about-section {
 		display: grid;
 		gap: 0.35rem;
@@ -321,7 +565,7 @@
 		background: transparent;
 	}
 
-	button {
+	.save-button {
 		width: 100%;
 		border: 0;
 		padding: 0 1rem;
@@ -341,7 +585,7 @@
 		filter: brightness(0.95);
 	}
 
-	button.saved {
+	.save-button.saved {
 		opacity: 0.9;
 	}
 
@@ -355,5 +599,15 @@
 		clip: rect(0, 0, 0, 0);
 		white-space: nowrap;
 		border: 0;
+	}
+
+	@media (max-width: 360px) {
+		.add-bottle-size-row {
+			grid-template-columns: 1fr;
+		}
+
+		.inline-button {
+			width: 100%;
+		}
 	}
 </style>
