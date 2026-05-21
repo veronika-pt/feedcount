@@ -14,7 +14,8 @@
 	let draftSetup = $state({
 		...defaultSetup,
 		currentWeightKg: String(defaultSetup.currentWeightKg),
-		bottleSizesMl: [...defaultSetup.bottleSizesMl]
+		bottleSizesMl: [...defaultSetup.bottleSizesMl],
+		feedingMode: 'formulaOnly'
 	});
 
 	$effect(() => {
@@ -23,6 +24,7 @@
 		draftSetup = {
 			...defaultSetup,
 			...setup,
+			feedingMode: 'formulaOnly',
 			currentWeightKg: String(setup.currentWeightKg ?? defaultSetup.currentWeightKg),
 			bottleSizesMl: [...nextBottleSizes]
 		};
@@ -71,6 +73,7 @@
 
 		onSave({
 			...draftSetup,
+			feedingMode: 'formulaOnly',
 			currentWeightKg: Number(draftSetup.currentWeightKg.replace(',', '.')),
 			formulaKcalPer100ml: Number(draftSetup.formulaKcalPer100ml),
 			bottleSizesMl: bottleSizesMl.length > 0 ? bottleSizesMl : defaultSetup.bottleSizesMl
@@ -85,13 +88,7 @@
 	}
 </script>
 
-<section class="setup-card" aria-labelledby="setup-title">
-	<div class="setup-header">
-		<p class="eyebrow">Setup</p>
-		<h2 id="setup-title">Baby and formula details</h2>
-		<p class="helper">These details help FeedCount estimate today’s remaining formula feeds.</p>
-	</div>
-
+<section class="setup-card" aria-label="FeedCount settings form">
 	<form
 		oninput={markAsChanged}
 		onchange={markAsChanged}
@@ -100,160 +97,145 @@
 			saveForm();
 		}}
 	>
-		<label>
-			<span>Baby name</span>
-			<input bind:value={draftSetup.babyName} type="text" autocomplete="off" />
-		</label>
+		<div class="form-content">
+			<section class="form-section" aria-labelledby="current-weight-title">
+				<h2 id="current-weight-title" class="sr-only">Current weight</h2>
 
-		<label>
-			<span>Birth date</span>
-			<input
-				bind:value={draftSetup.birthDate}
-				type="text"
-				placeholder="YYYY-MM-DD"
-				inputmode="numeric"
-				autocomplete="bday"
-				oninput={handleBirthDateInput}
-			/>
-		</label>
+				<label>
+					<span>Current weight, kg</span>
+					<input
+						bind:value={draftSetup.currentWeightKg}
+						type="text"
+						inputmode="decimal"
+						autocomplete="off"
+					/>
+					<small>Used for daily estimate calculations.</small>
+				</label>
+			</section>
 
-		<fieldset class="field">
-			<legend>Baby sex</legend>
+			<section class="form-section" aria-labelledby="baby-profile-title">
+				<h2 id="baby-profile-title" class="sr-only">Baby profile</h2>
 
-			<label class="radio-option">
-				<input type="radio" name="babySex" value="female" bind:group={draftSetup.babySex} />
-				<span>Female</span>
-			</label>
+				<label>
+					<span>Baby name</span>
+					<input bind:value={draftSetup.babyName} type="text" autocomplete="off" />
+				</label>
 
-			<label class="radio-option">
-				<input type="radio" name="babySex" value="male" bind:group={draftSetup.babySex} />
-				<span>Male</span>
-			</label>
+				<label>
+					<span>Birth date</span>
+					<input
+						bind:value={draftSetup.birthDate}
+						type="text"
+						placeholder="YYYY-MM-DD"
+						inputmode="numeric"
+						autocomplete="bday"
+						oninput={handleBirthDateInput}
+					/>
+				</label>
 
-			<label class="radio-option">
-				<input
-					type="radio"
-					name="babySex"
-					value="unspecified"
-					bind:group={draftSetup.babySex}
-				/>
-				<span>Unspecified</span>
-			</label>
-		</fieldset>
+				<fieldset class="field">
+					<legend>Sex</legend>
 
-		<fieldset class="field">
-			<legend>Feeding mode</legend>
+					<label class="radio-option">
+						<input type="radio" name="babySex" value="female" bind:group={draftSetup.babySex} />
+						<span>Female</span>
+					</label>
 
-			<label class="radio-option">
-				<input
-					type="radio"
-					name="feedingMode"
-					value="mixed"
-					bind:group={draftSetup.feedingMode}
-				/>
-				<span>Mixed feeding</span>
-			</label>
+					<label class="radio-option">
+						<input type="radio" name="babySex" value="male" bind:group={draftSetup.babySex} />
+						<span>Male</span>
+					</label>
 
-			<label class="radio-option">
-				<input
-					type="radio"
-					name="feedingMode"
-					value="formulaOnly"
-					bind:group={draftSetup.feedingMode}
-				/>
-				<span>Formula feeding only</span>
-			</label>
-		</fieldset>
+					<label class="radio-option">
+						<input
+							type="radio"
+							name="babySex"
+							value="unspecified"
+							bind:group={draftSetup.babySex}
+						/>
+						<span>Unspecified</span>
+					</label>
+				</fieldset>
+			</section>
 
-		<label>
-			<span>Current weight, kg</span>
-			<input
-				bind:value={draftSetup.currentWeightKg}
-				type="text"
-				inputmode="decimal"
-				autocomplete="off"
-			/>
-		</label>
+			<section class="form-section" aria-labelledby="feeding-title">
+				<h2 id="feeding-title" class="sr-only">Feeding</h2>
 
-		<label>
-			<span>Formula kcal per 100 ml</span>
-			<input
-				bind:value={draftSetup.formulaKcalPer100ml}
-				type="number"
-				min="0"
-				step="1"
-				inputmode="numeric"
-			/>
-		</label>
+				<label>
+					<span>Formula kcal per 100 ml</span>
+					<input
+						bind:value={draftSetup.formulaKcalPer100ml}
+						type="number"
+						min="0"
+						step="1"
+						inputmode="numeric"
+					/>
+				</label>
+			</section>
 
-		<label>
-			<span>Bottle sizes, ml</span>
-			<input
-				bind:value={bottleSizesInput}
-				type="text"
-				inputmode="numeric"
-				autocomplete="off"
-				placeholder="90, 120, 150"
-			/>
-			<small>Used for bottle ideas based on the sizes you normally prepare.</small>
-		</label>
+			<section class="form-section" aria-labelledby="bottle-sizes-title">
+				<h2 id="bottle-sizes-title" class="sr-only">Bottle sizes</h2>
 
-		<button type="submit" class:saved={saveStatus === 'saved'}>
-			{saveStatus === 'saved' ? 'Saved ✓' : 'Save setup'}
-		</button>
+				<label>
+					<span>Bottle sizes, ml</span>
+					<input
+						bind:value={bottleSizesInput}
+						type="text"
+						inputmode="numeric"
+						autocomplete="off"
+						placeholder="90, 120, 150"
+					/>
+					<small>Used for bottle ideas based on the sizes you normally prepare.</small>
+				</label>
+			</section>
+
+			<section class="about-section" aria-labelledby="about-title">
+				<h2 id="about-title">About</h2>
+				<p>
+					FeedCount gives lightweight daily estimates based on saved profile and feeding details.
+					It is not a medical tracker or medical advice.
+				</p>
+			</section>
+		</div>
+
+		<div class="save-bar">
+			<button type="submit" class:saved={saveStatus === 'saved'}>
+				{saveStatus === 'saved' ? 'Saved ✓' : 'Save settings'}
+			</button>
+		</div>
 	</form>
 </section>
 
 <style>
 	.setup-card {
 		display: grid;
-		gap: 1.25rem;
 		width: 100%;
 		max-width: 420px;
-		padding: 1.25rem;
-		border-radius: 1.5rem;
-		background: var(--color-card-bg);
-		box-shadow: var(--shadow-card);
-	}
-
-	.setup-header {
-		display: grid;
-		gap: 0.4rem;
-	}
-
-	.eyebrow {
-		margin: 0;
-		font-size: 0.75rem;
-		font-weight: 700;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--color-text-muted);
-	}
-
-	h2,
-	.helper {
-		margin: 0;
-	}
-
-	h2 {
-		font-size: 1.35rem;
-		line-height: 1.15;
-		color: var(--color-text-primary);
-	}
-
-	.helper {
-		color: var(--color-text-muted);
-		line-height: 1.5;
 	}
 
 	form {
 		display: grid;
+	}
+
+	.form-content {
+		display: grid;
 		gap: 1rem;
+		padding-bottom: 5.25rem;
+	}
+
+	.form-section {
+		display: grid;
+		gap: 1rem;
+		padding: 1rem;
+		border: 1px solid rgb(0 0 0 / 0.08);
+		border-radius: 1.2rem;
+		background: var(--color-card-bg);
+		box-shadow: var(--shadow-card);
 	}
 
 	label {
 		display: grid;
-		gap: 0.4rem;
+		gap: 0.45rem;
 		font-weight: 650;
 		color: var(--color-text-primary);
 	}
@@ -310,12 +292,43 @@
 		color: var(--color-text-primary);
 	}
 
+	.about-section {
+		display: grid;
+		gap: 0.35rem;
+		padding: 0.25rem 0.15rem 0.2rem;
+		color: var(--color-text-muted);
+	}
+
+	.about-section h2 {
+		margin: 0;
+		font-size: 0.9rem;
+		line-height: 1.25;
+		color: var(--color-text-secondary);
+	}
+
+	.about-section p {
+		margin: 0;
+		font-size: 0.9rem;
+		line-height: 1.45;
+		color: var(--color-text-muted);
+	}
+
+	.save-bar {
+		position: sticky;
+		bottom: calc(0.75rem + env(safe-area-inset-bottom));
+		z-index: 10;
+		padding: 0;
+		background: transparent;
+	}
+
 	button {
+		width: 100%;
 		border: 0;
 		padding: 0 1rem;
 		font-weight: 750;
 		color: var(--color-button-text);
 		background: var(--color-button-bg);
+		box-shadow: 0 14px 28px rgb(0 0 0 / 0.18);
 		cursor: pointer;
 		transition:
 			transform 120ms ease,
@@ -330,5 +343,17 @@
 
 	button.saved {
 		opacity: 0.9;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 </style>

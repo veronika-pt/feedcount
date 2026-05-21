@@ -17,7 +17,7 @@
 	<title>Settings · FeedCount</title>
 	<meta
 		name="description"
-		content="FeedCount setup details for daily formula estimates."
+		content="FeedCount settings for baby profile, feeding details, and daily formula estimates."
 	/>
 </svelte:head>
 
@@ -27,11 +27,8 @@
 	</button>
 
 	<section class="settings-header">
-		<p class="eyebrow">Settings</p>
-		<h1>Baby profile</h1>
-		<p>
-			Update the details FeedCount uses for daily formula estimates.
-		</p>
+		<h1>FeedCount settings</h1>
+		<p>Update the profile and feeding details used for daily formula estimates.</p>
 	</section>
 
 	<SetupForm setup={$setup} onSave={updateSetup} />
@@ -75,29 +72,19 @@
 	}
 
 	.settings-header {
-		padding: 4px 2px 8px;
-	}
-
-	.eyebrow {
-		margin: 0 0 8px;
-		font-size: 0.75rem;
-		font-weight: 700;
-		line-height: 1.2;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--color-text-muted);
+		padding: 8px 2px 12px;
 	}
 
 	h1 {
 		margin: 0;
-		font-size: clamp(2rem, 8vw, 2.5rem);
+		font-size: clamp(2rem, 7vw, 2.35rem);
 		font-weight: 700;
 		line-height: 1;
 		letter-spacing: -0.05em;
 		color: var(--color-text-primary);
 	}
 
-	.settings-header p:not(.eyebrow) {
+	.settings-header p {
 		margin: 12px 0 0;
 		font-size: 0.96rem;
 		font-weight: 400;
