@@ -7,11 +7,16 @@
 	let { dailyInput, onChange } = $props();
 
 	let formulaConsumedInput = $state('0');
+	let feedsLeftInput = $state('0');
 
 	const feedsLeftToday = $derived(dailyInput.formulaFeedsLeftToday ?? 0);
 
 	$effect(() => {
 		formulaConsumedInput = String(dailyInput.formulaConsumedMl ?? 0);
+	});
+
+	$effect(() => {
+		feedsLeftInput = String(dailyInput.formulaFeedsLeftToday ?? 0);
 	});
 
 	/**
@@ -36,11 +41,76 @@
 	}
 
 	/**
+	 * @param {string} value
+	 */
+	function parseFeedsLeft(value) {
+		const trimmedValue = value.trim();
+
+		if (trimmedValue === '') {
+			return null;
+		}
+
+		const parsedValue = Number(trimmedValue);
+
+		if (!Number.isInteger(parsedValue) || parsedValue < 0) {
+			return null;
+		}
+
+		return parsedValue;
+	}
+
+	/**
+	 * @param {Event} event
+	 */
+	function handleFeedsLeftInput(event) {
+		const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+		const value = input.value;
+
+		feedsLeftInput = value;
+
+		const feedsLeft = parseFeedsLeft(value);
+
+		if (feedsLeft === null) {
+			return;
+		}
+
+		onChange({
+			...dailyInput,
+			formulaFeedsLeftToday: feedsLeft
+		});
+	}
+
+	function restoreSafeFeedsLeftValue() {
+		const feedsLeft = parseFeedsLeft(feedsLeftInput);
+
+		if (feedsLeft === null) {
+			feedsLeftInput = String(dailyInput.formulaFeedsLeftToday ?? 0);
+			return;
+		}
+
+		feedsLeftInput = String(feedsLeft);
+	}
+
+	/**
+	 * @param {KeyboardEvent} event
+	 */
+	function handleFeedsLeftKeydown(event) {
+		if (event.key !== 'Enter') {
+			return;
+		}
+
+		restoreSafeFeedsLeftValue();
+		/** @type {HTMLInputElement} */ (event.currentTarget).blur();
+	}
+
+	/**
 	 * @param {number} change
 	 */
 	function updateFeedsLeft(change) {
 		const currentFeedsLeft = Number(dailyInput.formulaFeedsLeftToday ?? 0);
 		const nextFeedsLeft = Math.max(0, currentFeedsLeft + change);
+
+		feedsLeftInput = String(nextFeedsLeft);
 
 		onChange({
 			...dailyInput,
@@ -85,7 +155,17 @@
 					−
 				</button>
 
-				<span class="stepper-value">{feedsLeftToday}</span>
+				<input
+					class="stepper-input"
+					type="text"
+					inputmode="numeric"
+					pattern="[0-9]*"
+					value={feedsLeftInput}
+					oninput={handleFeedsLeftInput}
+					onblur={restoreSafeFeedsLeftValue}
+					onkeydown={handleFeedsLeftKeydown}
+					aria-label="Feeds left today"
+				/>
 
 				<button
 					type="button"
@@ -141,24 +221,20 @@
 		color: var(--color-muted-text);
 	}
 
-	.compact-input,
-	.stepper {
+	.compact-input {
+		width: fit-content;
+		max-width: 100%;
 		min-height: 52px;
 		display: inline-flex;
 		align-items: center;
+		gap: 8px;
+		padding: 0 16px;
 		border: 1px solid color-mix(in srgb, var(--color-info) 24%, var(--color-border));
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--color-info) 10%, var(--color-surface));
 	}
 
-	.compact-input {
-		width: fit-content;
-		max-width: 100%;
-		padding: 0 16px;
-		gap: 8px;
-	}
-
-	input {
+	.compact-input input {
 		width: 4.5ch;
 		min-width: 4.5ch;
 		border: 0;
@@ -173,8 +249,8 @@
 		appearance: textfield;
 	}
 
-	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button {
+	.compact-input input::-webkit-outer-spin-button,
+	.compact-input input::-webkit-inner-spin-button {
 		margin: 0;
 		appearance: none;
 	}
@@ -188,24 +264,29 @@
 	.stepper {
 		width: fit-content;
 		max-width: 100%;
-		gap: 14px;
-		padding: 6px;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
 	}
 
-	.stepper-button {
-		width: 40px;
-		height: 40px;
+	.stepper-button,
+	.stepper-input {
+		width: 44px;
+		height: 44px;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		border: 0;
-		border-radius: 0.85rem;
-		background: color-mix(in srgb, var(--color-primary-accent) 22%, var(--color-surface));
+		border: 1px solid color-mix(in srgb, var(--color-primary-accent) 20%, var(--color-border));
+		border-radius: 16px;
+		background: color-mix(in srgb, var(--color-primary-accent) 16%, var(--color-surface));
 		color: var(--color-text);
 		font: inherit;
-		font-size: 1.35rem;
-		font-weight: 400;
 		line-height: 1;
+	}
+
+	.stepper-button {
+		font-size: 1.35rem;
+		font-weight: 450;
 		cursor: pointer;
 	}
 
@@ -218,13 +299,18 @@
 		transform: scale(0.98);
 	}
 
-	.stepper-value {
-		min-width: 2ch;
+	.stepper-input {
 		text-align: center;
-		font-size: 1.35rem;
-		font-weight: 600;
-		line-height: 1;
-		color: var(--color-text);
+		font-size: 1.25rem;
+		font-weight: 550;
+		letter-spacing: -0.01em;
+		outline: none;
+		appearance: textfield;
+	}
+
+	.stepper-input:focus {
+		border-color: color-mix(in srgb, var(--color-primary-accent) 55%, var(--color-border));
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-accent) 18%, transparent);
 	}
 
 	@media (min-width: 390px) {
