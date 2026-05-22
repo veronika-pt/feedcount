@@ -355,7 +355,7 @@
 		display: grid;
 		gap: 0.9rem;
 		padding: 1rem 0;
-		border-bottom: 1px solid rgb(0 0 0 / 0.08);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-primary-accent) 18%, var(--color-border));
 		background: transparent;
 		box-shadow: none;
 	}
@@ -365,14 +365,14 @@
 		gap: 0.4rem;
 		font-size: 0.95rem;
 		font-weight: 650;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	small {
 		font-size: 0.82rem;
 		font-weight: 500;
 		line-height: 1.4;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 	}
 
 	.field {
@@ -387,7 +387,7 @@
 		padding: 0;
 		font-size: 0.95rem;
 		font-weight: 650;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.radio-option {
@@ -397,7 +397,7 @@
 		min-height: 1.75rem;
 		font-size: 0.95rem;
 		font-weight: 400;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.radio-option input {
@@ -416,11 +416,15 @@
 	}
 
 	input {
-		border: 1px solid rgb(0 0 0 / 0.12);
+		border: 1px solid color-mix(in srgb, var(--color-primary-accent) 18%, var(--color-border));
 		padding: 0 0.85rem;
-		background: var(--color-card-bg);
-		color: var(--color-text-primary);
+		background: color-mix(in srgb, var(--color-surface) 88%, var(--color-soft-accent));
+		color: var(--color-text);
 		font-weight: 400;
+	}
+
+	input[type='radio'] {
+		accent-color: var(--color-primary-accent);
 	}
 
 	.field-header {
@@ -433,7 +437,7 @@
 		font-size: 0.95rem;
 		font-weight: 650;
 		line-height: 1.25;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.bottle-size-list {
@@ -449,18 +453,18 @@
 		align-items: center;
 		gap: 0.35rem;
 		padding: 0 0.7rem;
-		border: 1px solid rgb(0 0 0 / 0.1);
+		border: 1px solid color-mix(in srgb, var(--color-primary-accent) 28%, var(--color-border));
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-card-bg) 92%, var(--color-button-bg) 8%);
+		background: color-mix(in srgb, var(--color-primary-accent) 16%, var(--color-surface));
 		box-shadow: none;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 		font-size: 0.86rem;
 		font-weight: 500;
 		cursor: pointer;
 	}
 
 	.bottle-size-chip span:last-child {
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 		font-size: 0.95rem;
 		font-weight: 400;
 		line-height: 1;
@@ -475,11 +479,11 @@
 		width: fit-content;
 		min-height: 2.25rem;
 		padding: 0 0.8rem;
-		border: 1px solid rgb(0 0 0 / 0.1);
+		border: 1px solid color-mix(in srgb, var(--color-info) 32%, var(--color-border));
 		border-radius: 999px;
-		background: transparent;
+		background: color-mix(in srgb, var(--color-info) 10%, transparent);
 		box-shadow: none;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 		font-size: 0.86rem;
 		font-weight: 650;
 		cursor: pointer;
@@ -500,9 +504,9 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		align-items: center;
-		border: 1px solid rgb(0 0 0 / 0.12);
+		border: 1px solid var(--color-border);
 		border-radius: 0.8rem;
-		background: var(--color-card-bg);
+		background: var(--color-surface);
 		overflow: hidden;
 	}
 
@@ -515,7 +519,7 @@
 
 	.input-with-unit span {
 		padding-right: 0.85rem;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 		font-size: 0.86rem;
 		font-weight: 500;
 	}
@@ -526,7 +530,7 @@
 		padding: 0 0.8rem;
 		border: 0;
 		border-radius: 0.8rem;
-		background: var(--color-button-bg);
+		background: var(--color-primary-accent);
 		box-shadow: none;
 		color: var(--color-button-text);
 		font-size: 0.86rem;
@@ -535,16 +539,16 @@
 	}
 
 	.inline-button.secondary {
-		border: 1px solid rgb(0 0 0 / 0.1);
+		border: 1px solid var(--color-border);
 		background: transparent;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 	}
 
 	.about-section {
 		display: grid;
 		gap: 0.35rem;
 		padding: 1rem 0 0.35rem;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 	}
 
 	.about-section h2 {
@@ -552,14 +556,14 @@
 		font-size: 0.85rem;
 		font-weight: 650;
 		line-height: 1.25;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 	}
 
 	.about-section p {
 		margin: 0;
 		font-size: 0.85rem;
 		line-height: 1.45;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 	}
 
 	.save-bar {
@@ -576,8 +580,8 @@
 		padding: 0 1rem;
 		font-weight: 750;
 		color: var(--color-button-text);
-		background: var(--color-button-bg);
-		box-shadow: 0 10px 22px rgb(0 0 0 / 0.14);
+		background: var(--color-primary-accent);
+		box-shadow: 0 10px 22px var(--color-shadow);
 		cursor: pointer;
 		transition:
 			transform 120ms ease,
@@ -592,6 +596,7 @@
 
 	.save-button.saved {
 		opacity: 0.9;
+		background: var(--color-success);
 	}
 
 	.sr-only {
@@ -604,27 +609,6 @@
 		clip: rect(0, 0, 0, 0);
 		white-space: nowrap;
 		border: 0;
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.form-section {
-			border-bottom-color: rgb(255 255 255 / 0.12);
-		}
-
-		input,
-		.input-with-unit {
-			border-color: rgb(255 255 255 / 0.14);
-		}
-
-		.bottle-size-chip,
-		.add-bottle-size-button,
-		.inline-button.secondary {
-			border-color: rgb(255 255 255 / 0.14);
-		}
-
-		.save-button {
-			box-shadow: none;
-		}
 	}
 
 	@media (max-width: 360px) {

@@ -107,10 +107,10 @@
 		display: grid;
 		gap: 16px;
 		padding: 18px;
-		border: 1px solid color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-info) 28%, var(--color-border));
 		border-radius: 24px;
-		background: var(--color-card-bg);
-		box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+		background: color-mix(in srgb, var(--color-info) 12%, var(--color-surface));
+		box-shadow: 0 8px 24px var(--color-shadow);
 	}
 
 	h2 {
@@ -119,7 +119,7 @@
 		font-weight: 650;
 		line-height: 1.25;
 		letter-spacing: -0.02em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.daily-controls {
@@ -138,7 +138,7 @@
 		font-size: 0.88rem;
 		font-weight: 500;
 		line-height: 1.35;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 	}
 
 	.compact-input,
@@ -146,9 +146,9 @@
 		min-height: 52px;
 		display: inline-flex;
 		align-items: center;
-		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-info) 24%, var(--color-border));
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-card-bg) 82%, var(--color-page-bg) 18%);
+		background: color-mix(in srgb, var(--color-info) 10%, var(--color-surface));
 	}
 
 	.compact-input {
@@ -165,10 +165,10 @@
 		background: transparent;
 		font: inherit;
 		font-size: 1.3rem;
-		font-weight: 600;
+		font-weight: 500;
 		line-height: 1;
 		letter-spacing: -0.01em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 		outline: none;
 		appearance: textfield;
 	}
@@ -182,7 +182,7 @@
 	.unit {
 		font-size: 0.96rem;
 		font-weight: 500;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 	}
 
 	.stepper {
@@ -199,9 +199,9 @@
 		align-items: center;
 		justify-content: center;
 		border: 0;
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-text-primary) 5%, transparent);
-		color: var(--color-text-primary);
+		border-radius: 0.85rem;
+		background: color-mix(in srgb, var(--color-primary-accent) 22%, var(--color-surface));
+		color: var(--color-text);
 		font: inherit;
 		font-size: 1.35rem;
 		font-weight: 400;
@@ -224,7 +224,7 @@
 		font-size: 1.35rem;
 		font-weight: 600;
 		line-height: 1;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	@media (min-width: 390px) {
@@ -235,7 +235,7 @@
 
 		.daily-controls > .control-group + .control-group {
 			padding-left: 16px;
-			border-left: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+			border-left: 1px solid color-mix(in srgb, var(--color-info) 24%, var(--color-border));
 		}
 	}
 </style>

@@ -1,20 +1,39 @@
 :root {
 	font-family:
 		-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-	color: #1d1d1f;
-	background: #f5f5f7;
 
-	--color-page-bg: #f5f5f7;
-	--color-card-bg: #ffffff;
-	--color-text-primary: #1d1d1f;
-	--color-text-secondary: #424245;
-	--color-text-muted: #6e6e73;
-	--color-button-bg: #1d1d1f;
-	--color-button-text: #ffffff;
+	--color-background: #f7f1e8;
+	--color-surface: #fffaf2;
+	--color-muted-surface: #efe4d5;
+
+	--color-text: #2c2924;
+	--color-muted-text: #756b60;
+	--color-border: #ded0bf;
+
+	--color-primary-accent: #6f8f82;
+	--color-soft-accent: #dcece8;
+	--color-warm-accent: #e3a16f;
+
+	--color-info: #82a9b8;
+	--color-success: #8ca678;
+	--color-warning: #c9964d;
+
+	--color-shadow: rgb(92 72 52 / 0.1);
+
+	--color-page-bg: var(--color-background);
+	--color-card-bg: var(--color-surface);
+	--color-text-primary: var(--color-text);
+	--color-text-secondary: var(--color-muted-text);
+	--color-text-muted: var(--color-muted-text);
+	--color-button-bg: var(--color-primary-accent);
+	--color-button-text: var(--color-surface);
+
+	color: var(--color-text);
+	background: var(--color-background);
 
 	--space-page-x: 16px;
 	--radius-card: 28px;
-	--shadow-card: 0 16px 40px rgb(0 0 0 / 0.08);
+	--shadow-card: 0 16px 40px var(--color-shadow);
 }
 
 * {
@@ -25,8 +44,8 @@ body {
 	margin: 0;
 	min-width: 320px;
 	min-height: 100vh;
-	background: var(--color-page-bg);
-	color: var(--color-text-primary);
+	background: var(--color-background);
+	color: var(--color-text);
 }
 
 button,
@@ -41,16 +60,28 @@ button {
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		color: #f5f5f7;
-		background: #000000;
+		--color-background: #101716;
+		--color-surface: #1b2523;
+		--color-muted-surface: #25302d;
 
-		--color-page-bg: #000000;
-		--color-card-bg: #1c1c1e;
-		--color-text-primary: #f5f5f7;
-		--color-text-secondary: #d1d1d6;
-		--color-text-muted: #a1a1a6;
-		--color-button-bg: #f5f5f7;
-		--color-button-text: #1d1d1f;
+		--color-text: #eee8dd;
+		--color-muted-text: #b9b0a5;
+		--color-border: #41504b;
+
+		--color-primary-accent: #9abfab;
+		--color-soft-accent: #2c403b;
+		--color-warm-accent: #d59a6a;
+
+		--color-info: #8bb3c0;
+		--color-success: #9fb88c;
+		--color-warning: #d3a35f;
+
+		--color-shadow: rgb(0 0 0 / 0.22);
+
+		--color-button-text: #10201a;
 		--shadow-card: none;
+
+		color: var(--color-text);
+		background: var(--color-background);
 	}
 }

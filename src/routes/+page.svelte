@@ -313,7 +313,7 @@
 		flex-direction: column;
 		align-items: center;
 		gap: 14px;
-		background: color-mix(in srgb, var(--color-page-bg) 76%, white 24%);
+		background: var(--color-background);
 	}
 
 	.app-header {
@@ -332,7 +332,7 @@
 		font-weight: 700;
 		line-height: 1;
 		letter-spacing: -0.05em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.intro {
@@ -340,7 +340,7 @@
 		font-size: 0.96rem;
 		font-weight: 400;
 		line-height: 1.45;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 	}
 
 	.settings-link {
@@ -350,19 +350,19 @@
 		justify-content: center;
 		min-height: 34px;
 		padding: 0 12px;
-		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-info) 24%, var(--color-border));
 		border-radius: 999px;
-		background: var(--color-card-bg);
-		color: var(--color-text-secondary);
+		background: color-mix(in srgb, var(--color-info) 8%, var(--color-surface));
+		color: var(--color-muted-text);
 		font-size: 0.86rem;
 		font-weight: 600;
 		line-height: 1;
 		text-decoration: none;
-		box-shadow: 0 4px 14px color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+		box-shadow: 0 4px 14px var(--color-shadow);
 	}
 
 	.settings-link:hover {
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.inline-settings-link {
@@ -372,10 +372,10 @@
 		min-height: 38px;
 		margin-top: 14px;
 		padding: 0 14px;
-		border: 1px solid color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-warm-accent) 36%, var(--color-border));
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-card-bg) 88%, white 12%);
-		color: var(--color-text-primary);
+		background: color-mix(in srgb, var(--color-warm-accent) 18%, var(--color-surface));
+		color: var(--color-text);
 		font-size: 0.9rem;
 		font-weight: 650;
 		line-height: 1;
@@ -386,10 +386,10 @@
 		width: 100%;
 		max-width: 420px;
 		padding: 18px;
-		border: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+		border: 1px solid var(--color-border);
 		border-radius: 24px;
-		background: var(--color-card-bg);
-		box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text-primary) 5%, transparent);
+		background: var(--color-surface);
+		box-shadow: 0 8px 24px var(--color-shadow);
 	}
 
 	.remaining-card,
@@ -401,11 +401,12 @@
 
 	.remaining-card {
 		padding: 16px 18px;
-		background: color-mix(in srgb, var(--color-card-bg) 88%, white 12%);
+		background: color-mix(in srgb, var(--color-success) 20%, var(--color-surface));
+		border-color: color-mix(in srgb, var(--color-success) 34%, var(--color-border));
 	}
 
 	.quiet-card {
-		background: color-mix(in srgb, var(--color-card-bg) 70%, var(--color-page-bg) 30%);
+		background: color-mix(in srgb, var(--color-info) 8%, var(--color-muted-surface));
 	}
 
 	.reference-card {
@@ -418,7 +419,7 @@
 		font-weight: 650;
 		line-height: 1.3;
 		letter-spacing: -0.015em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.remaining-value {
@@ -427,7 +428,7 @@
 		font-weight: 600;
 		line-height: 1;
 		letter-spacing: -0.015em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.secondary-value {
@@ -436,7 +437,7 @@
 		font-weight: 600;
 		line-height: 1;
 		letter-spacing: -0.015em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.estimate-metadata {
@@ -444,7 +445,7 @@
 		font-size: 0.85rem;
 		font-weight: 400;
 		line-height: 1.45;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 		overflow-wrap: anywhere;
 	}
 
@@ -453,7 +454,7 @@
 		font-size: 0.9rem;
 		font-weight: 400;
 		line-height: 1.45;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 	}
 
 	.message-list {
@@ -461,19 +462,19 @@
 		padding-left: 20px;
 		font-size: 0.9rem;
 		line-height: 1.5;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 	}
 
 	.suggestions {
 		display: grid;
 		gap: 0;
 		margin-top: 12px;
-		border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+		border-top: 1px solid var(--color-border);
 	}
 
 	.suggestion {
 		padding: 14px 0;
-		border-bottom: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+		border-bottom: 1px solid var(--color-border);
 	}
 
 	.suggestion-value {
@@ -482,7 +483,7 @@
 		font-weight: 600;
 		line-height: 1.2;
 		letter-spacing: -0.015em;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 	}
 
 	.other-options {
@@ -498,7 +499,7 @@
 		font-size: 0.9rem;
 		font-weight: 600;
 		line-height: 1.4;
-		color: var(--color-text-secondary);
+		color: var(--color-muted-text);
 		cursor: pointer;
 		list-style: none;
 	}
@@ -511,7 +512,7 @@
 		content: '⌄';
 		font-size: 0.95rem;
 		font-weight: 400;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 		transition: transform 0.15s ease;
 	}
 
@@ -521,7 +522,7 @@
 
 	.other-suggestions {
 		margin-top: 10px;
-		border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 7%, transparent);
+		border-top: 1px solid var(--color-border);
 	}
 
 	.secondary-suggestion .suggestion-value {
@@ -531,7 +532,7 @@
 	.about-card {
 		padding: 0;
 		overflow: hidden;
-		background: var(--color-card-bg);
+		background: var(--color-surface);
 	}
 
 	.about-card > summary {
@@ -544,7 +545,7 @@
 		font-size: 1rem;
 		font-weight: 650;
 		line-height: 1.3;
-		color: var(--color-text-primary);
+		color: var(--color-text);
 		cursor: pointer;
 		list-style: none;
 	}
@@ -557,7 +558,7 @@
 		content: '⌄';
 		font-size: 1.1rem;
 		font-weight: 400;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 		transition: transform 0.15s ease;
 	}
 
@@ -574,7 +575,7 @@
 		font-size: 0.9rem;
 		font-weight: 400;
 		line-height: 1.5;
-		color: var(--color-text-muted);
+		color: var(--color-muted-text);
 	}
 
 	.about-content p + p {
