@@ -347,29 +347,29 @@
 
 	.form-content {
 		display: grid;
-		gap: 1rem;
-		padding-bottom: 5.25rem;
+		gap: 0;
+		padding-bottom: 5rem;
 	}
 
 	.form-section {
 		display: grid;
-		gap: 1rem;
-		padding: 1rem;
-		border: 1px solid rgb(0 0 0 / 0.08);
-		border-radius: 1.2rem;
-		background: var(--color-card-bg);
-		box-shadow: var(--shadow-card);
+		gap: 0.9rem;
+		padding: 1rem 0;
+		border-bottom: 1px solid rgb(0 0 0 / 0.08);
+		background: transparent;
+		box-shadow: none;
 	}
 
 	label {
 		display: grid;
-		gap: 0.45rem;
+		gap: 0.4rem;
+		font-size: 0.95rem;
 		font-weight: 650;
 		color: var(--color-text-primary);
 	}
 
 	small {
-		font-size: 0.85rem;
+		font-size: 0.82rem;
 		font-weight: 500;
 		line-height: 1.4;
 		color: var(--color-text-muted);
@@ -385,6 +385,7 @@
 
 	legend {
 		padding: 0;
+		font-size: 0.95rem;
 		font-weight: 650;
 		color: var(--color-text-primary);
 	}
@@ -394,7 +395,8 @@
 		align-items: center;
 		gap: 0.5rem;
 		min-height: 1.75rem;
-		font-weight: 500;
+		font-size: 0.95rem;
+		font-weight: 400;
 		color: var(--color-text-primary);
 	}
 
@@ -408,26 +410,27 @@
 
 	input,
 	button {
-		min-height: 3rem;
-		border-radius: 0.9rem;
+		min-height: 2.75rem;
+		border-radius: 0.8rem;
 		font: inherit;
 	}
 
 	input {
 		border: 1px solid rgb(0 0 0 / 0.12);
-		padding: 0 0.9rem;
+		padding: 0 0.85rem;
 		background: var(--color-card-bg);
 		color: var(--color-text-primary);
+		font-weight: 400;
 	}
 
 	.field-header {
 		display: grid;
-		gap: 0.35rem;
+		gap: 0.3rem;
 	}
 
 	.field-header h2 {
 		margin: 0;
-		font-size: 1rem;
+		font-size: 0.95rem;
 		font-weight: 650;
 		line-height: 1.25;
 		color: var(--color-text-primary);
@@ -436,29 +439,30 @@
 	.bottle-size-list {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
+		gap: 0.45rem;
 	}
 
 	.bottle-size-chip {
 		display: inline-flex;
 		width: auto;
-		min-height: 2.25rem;
+		min-height: 2.1rem;
 		align-items: center;
-		gap: 0.4rem;
-		padding: 0 0.75rem;
+		gap: 0.35rem;
+		padding: 0 0.7rem;
 		border: 1px solid rgb(0 0 0 / 0.1);
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--color-card-bg) 82%, var(--color-button-bg) 18%);
+		background: color-mix(in srgb, var(--color-card-bg) 92%, var(--color-button-bg) 8%);
 		box-shadow: none;
 		color: var(--color-text-primary);
-		font-size: 0.9rem;
-		font-weight: 650;
+		font-size: 0.86rem;
+		font-weight: 500;
 		cursor: pointer;
 	}
 
 	.bottle-size-chip span:last-child {
 		color: var(--color-text-muted);
-		font-size: 1rem;
+		font-size: 0.95rem;
+		font-weight: 400;
 		line-height: 1;
 	}
 
@@ -469,14 +473,14 @@
 
 	.add-bottle-size-button {
 		width: fit-content;
-		min-height: 2.4rem;
-		padding: 0 0.85rem;
+		min-height: 2.25rem;
+		padding: 0 0.8rem;
 		border: 1px solid rgb(0 0 0 / 0.1);
 		border-radius: 999px;
 		background: transparent;
 		box-shadow: none;
 		color: var(--color-text-secondary);
-		font-size: 0.9rem;
+		font-size: 0.86rem;
 		font-weight: 650;
 		cursor: pointer;
 	}
@@ -497,13 +501,13 @@
 		grid-template-columns: minmax(0, 1fr) auto;
 		align-items: center;
 		border: 1px solid rgb(0 0 0 / 0.12);
-		border-radius: 0.9rem;
+		border-radius: 0.8rem;
 		background: var(--color-card-bg);
 		overflow: hidden;
 	}
 
 	.input-with-unit input {
-		min-height: 2.6rem;
+		min-height: 2.5rem;
 		border: 0;
 		border-radius: 0;
 		padding-right: 0.35rem;
@@ -512,20 +516,20 @@
 	.input-with-unit span {
 		padding-right: 0.85rem;
 		color: var(--color-text-muted);
-		font-size: 0.9rem;
-		font-weight: 650;
+		font-size: 0.86rem;
+		font-weight: 500;
 	}
 
 	.inline-button {
 		width: auto;
-		min-height: 2.6rem;
+		min-height: 2.5rem;
 		padding: 0 0.8rem;
 		border: 0;
-		border-radius: 0.85rem;
+		border-radius: 0.8rem;
 		background: var(--color-button-bg);
 		box-shadow: none;
 		color: var(--color-button-text);
-		font-size: 0.9rem;
+		font-size: 0.86rem;
 		font-weight: 750;
 		cursor: pointer;
 	}
@@ -539,20 +543,21 @@
 	.about-section {
 		display: grid;
 		gap: 0.35rem;
-		padding: 0.25rem 0.15rem 0.2rem;
+		padding: 1rem 0 0.35rem;
 		color: var(--color-text-muted);
 	}
 
 	.about-section h2 {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: 0.85rem;
+		font-weight: 650;
 		line-height: 1.25;
 		color: var(--color-text-secondary);
 	}
 
 	.about-section p {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: 0.85rem;
 		line-height: 1.45;
 		color: var(--color-text-muted);
 	}
@@ -572,7 +577,7 @@
 		font-weight: 750;
 		color: var(--color-button-text);
 		background: var(--color-button-bg);
-		box-shadow: 0 14px 28px rgb(0 0 0 / 0.18);
+		box-shadow: 0 10px 22px rgb(0 0 0 / 0.14);
 		cursor: pointer;
 		transition:
 			transform 120ms ease,
@@ -599,6 +604,27 @@
 		clip: rect(0, 0, 0, 0);
 		white-space: nowrap;
 		border: 0;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		.form-section {
+			border-bottom-color: rgb(255 255 255 / 0.12);
+		}
+
+		input,
+		.input-with-unit {
+			border-color: rgb(255 255 255 / 0.14);
+		}
+
+		.bottle-size-chip,
+		.add-bottle-size-button,
+		.inline-button.secondary {
+			border-color: rgb(255 255 255 / 0.14);
+		}
+
+		.save-button {
+			box-shadow: none;
+		}
 	}
 
 	@media (max-width: 360px) {
