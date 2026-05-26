@@ -1,4 +1,6 @@
 <script>
+	import StepperInput from '$lib/components/StepperInput.svelte';
+
 	/**
 	 * @typedef {import('$lib/data/dailyInputDefaults.js').DailyInput} DailyInput
 	 */
@@ -7,16 +9,9 @@
 	let { dailyInput, onChange } = $props();
 
 	let formulaConsumedInput = $state('0');
-	let feedsLeftInput = $state('0');
-
-	const feedsLeftToday = $derived(dailyInput.formulaFeedsLeftToday ?? 0);
 
 	$effect(() => {
 		formulaConsumedInput = String(dailyInput.formulaConsumedMl ?? 0);
-	});
-
-	$effect(() => {
-		feedsLeftInput = String(dailyInput.formulaFeedsLeftToday ?? 0);
 	});
 
 	/**
@@ -41,80 +36,12 @@
 	}
 
 	/**
-	 * @param {string} value
+	 * @param {number} formulaFeedsLeftToday
 	 */
-	function parseFeedsLeft(value) {
-		const trimmedValue = value.trim();
-
-		if (trimmedValue === '') {
-			return null;
-		}
-
-		const parsedValue = Number(trimmedValue);
-
-		if (!Number.isInteger(parsedValue) || parsedValue < 0) {
-			return null;
-		}
-
-		return parsedValue;
-	}
-
-	/**
-	 * @param {Event} event
-	 */
-	function handleFeedsLeftInput(event) {
-		const input = /** @type {HTMLInputElement} */ (event.currentTarget);
-		const value = input.value;
-
-		feedsLeftInput = value;
-
-		const feedsLeft = parseFeedsLeft(value);
-
-		if (feedsLeft === null) {
-			return;
-		}
-
+	function handleFeedsLeftChange(formulaFeedsLeftToday) {
 		onChange({
 			...dailyInput,
-			formulaFeedsLeftToday: feedsLeft
-		});
-	}
-
-	function restoreSafeFeedsLeftValue() {
-		const feedsLeft = parseFeedsLeft(feedsLeftInput);
-
-		if (feedsLeft === null) {
-			feedsLeftInput = String(dailyInput.formulaFeedsLeftToday ?? 0);
-			return;
-		}
-
-		feedsLeftInput = String(feedsLeft);
-	}
-
-	/**
-	 * @param {KeyboardEvent} event
-	 */
-	function handleFeedsLeftKeydown(event) {
-		if (event.key !== 'Enter') {
-			return;
-		}
-
-		restoreSafeFeedsLeftValue();
-		/** @type {HTMLInputElement} */ (event.currentTarget).blur();
-	}
-
-	/**
-	 * @param {number} change
-	 */
-	function updateFeedsLeft(change) {
-		const currentFeedsLeft = Number(dailyInput.formulaFeedsLeftToday ?? 0);
-		const nextFeedsLeft = Math.max(0, currentFeedsLeft + change);
-
-		feedsLeftInput = String(nextFeedsLeft);
-
-		onChange({
-			...dailyInput,
-			formulaFeedsLeftToday: nextFeedsLeft
+			formulaFeedsLeftToday
 		});
 	}
 </script>
@@ -144,38 +71,15 @@
 		<div class="control-group">
 			<span class="control-label">Feeds left today</span>
 
-			<div class="stepper" aria-label="Formula feeds left today">
-				<button
-					type="button"
-					class="stepper-button"
-					aria-label="Decrease feeds left today"
-					disabled={feedsLeftToday === 0}
-					onclick={() => updateFeedsLeft(-1)}
-				>
-					−
-				</button>
-
-				<input
-					class="stepper-input"
-					type="text"
-					inputmode="numeric"
-					pattern="[0-9]*"
-					value={feedsLeftInput}
-					oninput={handleFeedsLeftInput}
-					onblur={restoreSafeFeedsLeftValue}
-					onkeydown={handleFeedsLeftKeydown}
-					aria-label="Feeds left today"
-				/>
-
-				<button
-					type="button"
-					class="stepper-button"
-					aria-label="Increase feeds left today"
-					onclick={() => updateFeedsLeft(1)}
-				>
-					+
-				</button>
-			</div>
+			<StepperInput
+				value={dailyInput.formulaFeedsLeftToday ?? 0}
+				min={0}
+				step={1}
+				ariaLabel="Formula feeds left today"
+				decreaseAriaLabel="Decrease feeds left today"
+				increaseAriaLabel="Increase feeds left today"
+				onChange={handleFeedsLeftChange}
+			/>
 		</div>
 	</div>
 </section>
@@ -259,58 +163,6 @@
 		font-size: 0.96rem;
 		font-weight: 500;
 		color: var(--color-muted-text);
-	}
-
-	.stepper {
-		width: fit-content;
-		max-width: 100%;
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-	}
-
-	.stepper-button,
-	.stepper-input {
-		width: 44px;
-		height: 44px;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		border: 1px solid color-mix(in srgb, var(--color-primary-accent) 20%, var(--color-border));
-		border-radius: 16px;
-		background: color-mix(in srgb, var(--color-primary-accent) 16%, var(--color-surface));
-		color: var(--color-text);
-		font: inherit;
-		line-height: 1;
-	}
-
-	.stepper-button {
-		font-size: 1.35rem;
-		font-weight: 450;
-		cursor: pointer;
-	}
-
-	.stepper-button:disabled {
-		cursor: not-allowed;
-		opacity: 0.35;
-	}
-
-	.stepper-button:not(:disabled):active {
-		transform: scale(0.98);
-	}
-
-	.stepper-input {
-		text-align: center;
-		font-size: 1.25rem;
-		font-weight: 550;
-		letter-spacing: -0.01em;
-		outline: none;
-		appearance: textfield;
-	}
-
-	.stepper-input:focus {
-		border-color: color-mix(in srgb, var(--color-primary-accent) 55%, var(--color-border));
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-accent) 18%, transparent);
 	}
 
 	@media (min-width: 390px) {

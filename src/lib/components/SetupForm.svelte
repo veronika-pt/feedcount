@@ -207,16 +207,6 @@
 						/>
 					</label>
 
-					<label>
-						<span>Current weight, kg</span>
-						<input
-							bind:value={draftSetup.currentWeightKg}
-							type="text"
-							inputmode="decimal"
-							autocomplete="off"
-						/>
-						<small>Used for daily estimate calculations.</small>
-					</label>
 
 					<fieldset class="field">
 						<legend>Sex</legend>
@@ -392,12 +382,6 @@
 		color: var(--color-text);
 	}
 
-	small {
-		font-size: 0.82rem;
-		font-weight: 500;
-		line-height: 1.4;
-		color: var(--color-muted-text);
-	}
 
 	.field {
 	display: grid;

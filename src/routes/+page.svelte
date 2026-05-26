@@ -1,7 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import DailyInput from '$lib/components/DailyInput.svelte';
-	import { initialiseSetup, setup } from '$lib/stores/setupStore.js';
+	import StepperInput from '$lib/components/StepperInput.svelte';
+	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
 	import { getCompletedAgeMonths } from '$lib/calculations/age.js';
 	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
 	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
@@ -31,10 +32,7 @@
 	const remainingFormulaMl = $derived(
 		dailyFormulaTargetMl === null
 			? null
-			: getRemainingFormulaMl(
-					dailyFormulaTargetMl,
-					dailyInputState.dailyInput.formulaConsumedMl
-				)
+			: getRemainingFormulaMl(dailyFormulaTargetMl, dailyInputState.dailyInput.formulaConsumedMl)
 	);
 	const isAboveFormulaEstimate = $derived(
 		dailyFormulaTargetMl === null
@@ -53,12 +51,8 @@
 					feedCount: dailyInputState.dailyInput.formulaFeedsLeftToday
 				})
 	);
-	const primaryBottleDistributionSuggestion = $derived(
-		bottleDistributionSuggestions[0] ?? null
-	);
-	const otherBottleDistributionSuggestions = $derived(
-		bottleDistributionSuggestions.slice(1)
-	);
+	const primaryBottleDistributionSuggestion = $derived(bottleDistributionSuggestions[0] ?? null);
+	const otherBottleDistributionSuggestions = $derived(bottleDistributionSuggestions.slice(1));
 	const dailyEstimateMetadata = $derived(
 		[
 			formatBabySexLabel($setup.babySex),
@@ -72,6 +66,16 @@
 		initialiseSetup();
 		dailyInputState.load();
 	});
+
+	/**
+	 * @param {number} currentWeightKg
+	 */
+	function handleCurrentWeightChange(currentWeightKg) {
+		updateSetup({
+			...$setup,
+			currentWeightKg
+		});
+	}
 
 	/**
 	 * @param {number[]} bottlesMl
@@ -158,19 +162,14 @@
 
 <svelte:head>
 	<title>{appName}</title>
-	<meta
-		name="description"
-		content="A small app for estimating remaining formula feeds today."
-	/>
+	<meta name="description" content="A small app for estimating remaining formula feeds today." />
 </svelte:head>
 
 <main class="page">
 	<header class="app-header">
 		<div>
 			<h1>{appName}</h1>
-			<p class="intro">
-				Practical estimates for planning today’s feeds. Not medical advice.
-			</p>
+			<p class="intro">Practical estimates for planning today’s feeds. Not medical advice.</p>
 		</div>
 
 		<a class="settings-link" href="/settings">Settings</a>
@@ -178,12 +177,31 @@
 
 	<DailyInput dailyInput={dailyInputState.dailyInput} onChange={dailyInputState.update} />
 
+	<section class="card weight-card" aria-labelledby="current-weight-title">
+		<div class="weight-copy">
+			<p id="current-weight-title" class="card-title">Current weight</p>
+			<p class="weight-helper">Used for daily estimate.</p>
+		</div>
+
+		<StepperInput
+			value={$setup.currentWeightKg}
+			min={0.1}
+			step={0.1}
+			unit="kg"
+			decimalPlaces={1}
+			useDecimalComma={true}
+			enforceInteger={false}
+			ariaLabel="Current weight in kilograms"
+			decreaseAriaLabel="Decrease current weight by 100 grams"
+			increaseAriaLabel="Increase current weight by 100 grams"
+			onChange={handleCurrentWeightChange}
+		/>
+	</section>
+
 	{#if !setupValidation.isValid}
 		<section class="card">
 			<p class="card-title">Complete your setup</p>
-			<p class="body-text">
-				Add the missing setup details in Settings to see today’s estimate.
-			</p>
+			<p class="body-text">Add the missing setup details in Settings to see today’s estimate.</p>
 
 			<ul class="message-list">
 				{#each setupValidation.messages as message}
@@ -196,9 +214,7 @@
 	{:else if !dailyInputValidation.isValid}
 		<section class="card">
 			<p class="card-title">Check today’s input</p>
-			<p class="body-text">
-				Check today’s formula intake to update the estimate.
-			</p>
+			<p class="body-text">Check today’s formula intake to update the estimate.</p>
 
 			<ul class="message-list">
 				{#each dailyInputValidation.messages as message}
@@ -224,9 +240,7 @@
 			<p class="card-title">Suggested bottle split</p>
 
 			{#if dailyInputState.dailyInput.formulaFeedsLeftToday <= 0}
-				<p class="body-text">
-					Add feeds left to see bottle ideas.
-				</p>
+				<p class="body-text">Add feeds left to see bottle ideas.</p>
 			{:else if primaryBottleDistributionSuggestion}
 				<div class="suggestions">
 					<div class="suggestion">
@@ -252,9 +266,7 @@
 										{formatBottleCombination(suggestion.bottlesMl)}
 									</p>
 									<p class="body-text">
-										Total: {suggestion.totalMl} ml • {formatDifference(
-											suggestion.differenceMl
-										)}
+										Total: {suggestion.totalMl} ml • {formatDifference(suggestion.differenceMl)}
 									</p>
 								</div>
 							{/each}
@@ -262,9 +274,7 @@
 					</details>
 				{/if}
 			{:else}
-				<p class="body-text">
-					Check saved bottle sizes in Settings.
-				</p>
+				<p class="body-text">Check saved bottle sizes in Settings.</p>
 			{/if}
 		</section>
 
@@ -273,17 +283,13 @@
 			<p class="secondary-value">{dailyFormulaTargetMl} ml</p>
 
 			{#if dailyEstimateMetadata.length > 0}
-				<p class="estimate-metadata">
-					{dailyEstimateMetadata.join(' • ')}
-				</p>
+				<p class="estimate-metadata">{dailyEstimateMetadata.join(' • ')}</p>
 			{/if}
 		</section>
 	{:else}
 		<section class="card">
 			<p class="card-title">Formula estimate is not ready yet</p>
-			<p class="body-text">
-				Check Settings, then save again.
-			</p>
+			<p class="body-text">Check Settings, then save again.</p>
 
 			<a class="inline-settings-link" href="/settings">Open Settings</a>
 		</section>
@@ -294,12 +300,13 @@
 
 		<div class="about-content">
 			<p>
-				FeedCount estimates how much formula may still be needed today, using setup details, today’s entered formula intake, feeds left, and saved bottle sizes.
+				FeedCount estimates how much formula may still be needed today, using setup details, today’s
+				entered formula intake, feeds left, and saved bottle sizes.
 			</p>
 
 			<p>
-				The numbers are practical planning estimates only. They are not medical targets
-				and do not replace advice from a clinician.
+				The numbers are practical planning estimates only. They are not medical targets and do not
+				replace advice from a clinician.
 			</p>
 		</div>
 	</details>
@@ -397,6 +404,31 @@
 	.reference-card,
 	.about-card {
 		box-shadow: none;
+	}
+
+	.weight-card {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 14px;
+		padding: 14px 16px;
+		background: color-mix(in srgb, var(--color-warm-accent) 8%, var(--color-surface));
+		border-color: color-mix(in srgb, var(--color-warm-accent) 24%, var(--color-border));
+		box-shadow: none;
+	}
+
+	.weight-copy {
+		display: grid;
+		gap: 3px;
+		min-width: 0;
+	}
+
+	.weight-helper {
+		margin: 0;
+		font-size: 0.84rem;
+		font-weight: 400;
+		line-height: 1.35;
+		color: var(--color-muted-text);
 	}
 
 	.remaining-card {
@@ -580,5 +612,12 @@
 
 	.about-content p + p {
 		margin-top: 10px;
+	}
+
+	@media (max-width: 389px) {
+		.weight-card {
+			align-items: flex-start;
+			flex-direction: column;
+		}
 	}
 </style>
