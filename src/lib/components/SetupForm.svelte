@@ -186,85 +186,87 @@
 		}}
 	>
 		<div class="form-content">
-			<section class="form-section" aria-labelledby="current-weight-title">
-				<h2 id="current-weight-title" class="sr-only">Current weight</h2>
+			<section class="form-section" aria-labelledby="Baby profile">
+				
 
-				<label>
-					<span>Current weight, kg</span>
-					<input
-						bind:value={draftSetup.currentWeightKg}
-						type="text"
-						inputmode="decimal"
-						autocomplete="off"
-					/>
-					<small>Used for daily estimate calculations.</small>
-				</label>
-			</section>
-
-			<section class="form-section" aria-labelledby="baby-profile-title">
-				<h2 id="baby-profile-title" class="sr-only">Baby profile</h2>
-
-				<label>
-					<span>Baby name</span>
-					<input bind:value={draftSetup.babyName} type="text" autocomplete="off" />
-				</label>
-
-				<label>
-					<span>Birth date</span>
-					<input
-						bind:value={draftSetup.birthDate}
-						type="text"
-						placeholder="YYYY-MM-DD"
-						inputmode="numeric"
-						autocomplete="bday"
-						oninput={handleBirthDateInput}
-					/>
-				</label>
-
-				<fieldset class="field">
-					<legend>Sex</legend>
-
-					<label class="radio-option">
-						<input type="radio" name="babySex" value="female" bind:group={draftSetup.babySex} />
-						<span>Female</span>
+				<div class="section-fields">
+					<label>
+						<span>Baby name</span>
+						<input bind:value={draftSetup.babyName} type="text" autocomplete="off" />
 					</label>
 
-					<label class="radio-option">
-						<input type="radio" name="babySex" value="male" bind:group={draftSetup.babySex} />
-						<span>Male</span>
-					</label>
-
-					<label class="radio-option">
+					<label>
+						<span>Birth date</span>
 						<input
-							type="radio"
-							name="babySex"
-							value="unspecified"
-							bind:group={draftSetup.babySex}
+							bind:value={draftSetup.birthDate}
+							type="text"
+							placeholder="YYYY-MM-DD"
+							inputmode="numeric"
+							autocomplete="bday"
+							oninput={handleBirthDateInput}
 						/>
-						<span>Unspecified</span>
 					</label>
-				</fieldset>
+
+					<label>
+						<span>Current weight, kg</span>
+						<input
+							bind:value={draftSetup.currentWeightKg}
+							type="text"
+							inputmode="decimal"
+							autocomplete="off"
+						/>
+						<small>Used for daily estimate calculations.</small>
+					</label>
+
+					<fieldset class="field">
+						<legend>Sex</legend>
+
+						<label class="radio-option">
+							<input type="radio" name="babySex" value="female" bind:group={draftSetup.babySex} />
+							<span>Female</span>
+						</label>
+
+						<label class="radio-option">
+							<input type="radio" name="babySex" value="male" bind:group={draftSetup.babySex} />
+							<span>Male</span>
+						</label>
+
+						<label class="radio-option">
+							<input
+								type="radio"
+								name="babySex"
+								value="unspecified"
+								bind:group={draftSetup.babySex}
+							/>
+							<span>Unspecified</span>
+						</label>
+					</fieldset>
+				</div>
 			</section>
 
-			<section class="form-section" aria-labelledby="feeding-title">
-				<h2 id="feeding-title" class="sr-only">Feeding</h2>
+			<section class="form-section" aria-labelledby="formula-details-title">
+				<div class="section-header">
+					<h2 id="formula-details-title">Formula kcal per 100 ml</h2>
+				</div>
 
-				<label>
-					<span>Formula kcal per 100 ml</span>
-					<input
-						bind:value={draftSetup.formulaKcalPer100ml}
-						type="number"
-						min="0"
-						step="1"
-						inputmode="numeric"
-					/>
-				</label>
+				<div class="section-fields">
+					<label>
+	
+						<input
+							bind:value={draftSetup.formulaKcalPer100ml}
+							type="number"
+							min="0"
+							step="1"
+							inputmode="numeric"
+						/>
+					</label>
+				</div>
 			</section>
 
 			<section class="form-section" aria-labelledby="bottle-sizes-title">
-				<div class="field-header">
+				<div class="section-header">
 					<h2 id="bottle-sizes-title">Bottle sizes</h2>
-					<small>Used for bottle ideas based on the sizes you normally prepare.</small>
+					
 				</div>
 
 				<div class="bottle-size-list" aria-label="Saved bottle sizes">
@@ -318,7 +320,7 @@
 			</section>
 
 			<section class="about-section" aria-labelledby="about-title">
-				<h2 id="about-title">About</h2>
+				<h2 id="about-title">About FeedCount</h2>
 				<p>
 					FeedCount gives lightweight daily estimates based on saved profile and feeding details.
 					It is not a medical tracker or medical advice.
@@ -347,17 +349,39 @@
 
 	.form-content {
 		display: grid;
-		gap: 0;
+		gap: 0.85rem;
 		padding-bottom: 5rem;
 	}
 
-	.form-section {
+	.form-section,
+	.about-section {
+		display: grid;
+		gap: 1rem;
+		padding: 1rem;
+		border: 1px solid color-mix(in srgb, var(--color-primary-accent) 14%, var(--color-border));
+		border-radius: 1.35rem;
+		background: var(--color-card-bg);
+		box-shadow: 0 10px 26px var(--color-shadow);
+	}
+
+	.section-header {
+		display: grid;
+		gap: 0.25rem;
+	}
+
+	.section-header h2,
+	.about-section h2 {
+		margin: 0;
+		font-size: 0.96rem;
+		font-weight: 750;
+		line-height: 1.2;
+		letter-spacing: -0.015em;
+		color: var(--color-text);
+	}
+
+	.section-fields {
 		display: grid;
 		gap: 0.9rem;
-		padding: 1rem 0;
-		border-bottom: 1px solid color-mix(in srgb, var(--color-primary-accent) 18%, var(--color-border));
-		background: transparent;
-		box-shadow: none;
 	}
 
 	label {
@@ -376,12 +400,12 @@
 	}
 
 	.field {
-		display: grid;
-		gap: 0.45rem;
-		margin: 0;
-		padding: 0;
-		border: 0;
-	}
+	display: grid;
+	gap: 0.45rem;
+	margin: 0.25rem 0 0;
+	padding: 0;
+	border: 0;
+}
 
 	legend {
 		padding: 0;
@@ -425,19 +449,6 @@
 
 	input[type='radio'] {
 		accent-color: var(--color-primary-accent);
-	}
-
-	.field-header {
-		display: grid;
-		gap: 0.3rem;
-	}
-
-	.field-header h2 {
-		margin: 0;
-		font-size: 0.95rem;
-		font-weight: 650;
-		line-height: 1.25;
-		color: var(--color-text);
 	}
 
 	.bottle-size-list {
@@ -545,17 +556,14 @@
 	}
 
 	.about-section {
-		display: grid;
 		gap: 0.35rem;
-		padding: 1rem 0 0.35rem;
+		background: color-mix(in srgb, var(--color-card-bg) 78%, var(--color-soft-accent));
+		box-shadow: none;
 		color: var(--color-muted-text);
 	}
 
 	.about-section h2 {
-		margin: 0;
-		font-size: 0.85rem;
-		font-weight: 650;
-		line-height: 1.25;
+		font-size: 0.88rem;
 		color: var(--color-muted-text);
 	}
 
