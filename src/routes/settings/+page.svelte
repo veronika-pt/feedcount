@@ -61,7 +61,7 @@
 		color: var(--color-text-muted);
 		font: inherit;
 		font-size: 0.9rem;
-		font-weight: 600;
+		font-weight: 550;
 		line-height: 1;
 		text-align: left;
 		cursor: pointer;
@@ -78,9 +78,9 @@
 	h1 {
 		margin: 0;
 		font-size: clamp(1.55rem, 6vw, 1.85rem);
-		font-weight: 700;
-		line-height: 1.08;
-		letter-spacing: -0.04em;
+		font-weight: 650;
+		line-height: 1.1;
+		letter-spacing: -0.02em;
 		color: var(--color-text-primary);
 	}
 

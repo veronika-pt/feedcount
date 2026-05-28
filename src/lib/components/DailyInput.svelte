@@ -51,7 +51,7 @@
 
 	<div class="daily-controls">
 		<label class="control-group">
-			<span class="control-label">Formula consumed today</span>
+			<span class="control-label">Formula consumed</span>
 
 			<div class="compact-input">
 				<input
@@ -69,7 +69,7 @@
 		</label>
 
 		<div class="control-group">
-			<span class="control-label">Feeds left today</span>
+			<span class="control-label">Feeds left</span>
 
 			<StepperInput
 				value={dailyInput.formulaFeedsLeftToday ?? 0}
@@ -100,9 +100,9 @@
 	h2 {
 		margin: 0;
 		font-size: 1.2rem;
-		font-weight: 650;
+		font-weight: 600;
 		line-height: 1.25;
-		letter-spacing: -0.02em;
+		letter-spacing: -0.01em;
 		color: var(--color-text);
 	}
 
@@ -145,9 +145,9 @@
 		background: transparent;
 		font: inherit;
 		font-size: 1.3rem;
-		font-weight: 500;
+		font-weight: 460;
 		line-height: 1;
-		letter-spacing: -0.01em;
+		letter-spacing: 0;
 		color: var(--color-text);
 		outline: none;
 		appearance: textfield;
@@ -161,18 +161,18 @@
 
 	.unit {
 		font-size: 0.96rem;
-		font-weight: 500;
+		font-weight: 460;
 		color: var(--color-muted-text);
 	}
 
 	@media (min-width: 390px) {
 		.daily-controls {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-			gap: 16px;
+			grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+			gap: 12px;
 		}
 
 		.daily-controls > .control-group + .control-group {
-			padding-left: 16px;
+			padding-left: 12px;
 			border-left: 1px solid color-mix(in srgb, var(--color-info) 24%, var(--color-border));
 		}
 	}

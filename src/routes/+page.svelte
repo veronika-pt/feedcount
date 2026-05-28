@@ -177,27 +177,6 @@
 
 	<DailyInput dailyInput={dailyInputState.dailyInput} onChange={dailyInputState.update} />
 
-	<section class="card weight-card" aria-labelledby="current-weight-title">
-		<div class="weight-copy">
-			<p id="current-weight-title" class="card-title">Current weight</p>
-			<p class="weight-helper">Used for daily estimate.</p>
-		</div>
-
-		<StepperInput
-			value={$setup.currentWeightKg}
-			min={0.1}
-			step={0.1}
-			unit="kg"
-			decimalPlaces={1}
-			useDecimalComma={true}
-			enforceInteger={false}
-			ariaLabel="Current weight in kilograms"
-			decreaseAriaLabel="Decrease current weight by 100 grams"
-			increaseAriaLabel="Increase current weight by 100 grams"
-			onChange={handleCurrentWeightChange}
-		/>
-	</section>
-
 	{#if !setupValidation.isValid}
 		<section class="card">
 			<p class="card-title">Complete your setup</p>
@@ -278,6 +257,27 @@
 			{/if}
 		</section>
 
+<section class="card weight-card" aria-labelledby="current-weight-title">
+	<div class="weight-copy">
+		<p id="current-weight-title" class="card-title">Current weight, kg</p>
+		<p class="weight-helper">Adjusts the daily estimate.</p>
+	</div>
+
+	<StepperInput
+		value={$setup.currentWeightKg}
+		min={0.1}
+		step={0.1}
+		wideValue={true}
+		decimalPlaces={1}
+		useDecimalComma={true}
+		enforceInteger={false}
+		ariaLabel="Current weight in kilograms"
+		decreaseAriaLabel="Decrease current weight by 100 grams"
+		increaseAriaLabel="Increase current weight by 100 grams"
+		onChange={handleCurrentWeightChange}
+	/>
+</section>
+
 		<section class="card reference-card">
 			<p class="card-title">Daily estimate</p>
 			<p class="secondary-value">{dailyFormulaTargetMl} ml</p>
@@ -300,14 +300,27 @@
 
 		<div class="about-content">
 			<p>
-				FeedCount estimates how much formula may still be needed today, using setup details, today’s
-				entered formula intake, feeds left, and saved bottle sizes.
-			</p>
+	FeedCount estimates a suitable daily amount of formula based on your baby’s weight,
+	age, sex, and the energy content of the formula.
+</p>
 
-			<p>
-				The numbers are practical planning estimates only. They are not medical targets and do not
-				replace advice from a clinician.
-			</p>
+<p>
+	The reference energy values are based on the Human energy requirements: 
+	<a href="https://www.fao.org/4/y5686e/y5686e05.htm" target="_blank" rel="noreferrer">
+		Report of a Joint FAO/WHO/UNU Expert Consultation
+	</a>,
+	which provides infant energy requirements by age, weight, and sex.
+</p>
+
+<p>
+	FeedCount then compares this estimate with today’s entered formula intake, feeds left,
+	and saved bottle sizes to suggest a practical bottle split for the rest of the day.
+</p>
+
+<p>
+	The numbers are planning estimates only. They are not medical targets and do not replace
+	advice from a clinician.
+</p>
 		</div>
 	</details>
 </main>
@@ -336,9 +349,9 @@
 	h1 {
 		margin: 0;
 		font-size: clamp(2.25rem, 9vw, 2.9rem);
-		font-weight: 700;
-		line-height: 1;
-		letter-spacing: -0.05em;
+		font-weight: 650;
+		line-height: 1.1;
+		letter-spacing: -0.02em;
 		color: var(--color-text);
 	}
 
@@ -512,9 +525,9 @@
 	.suggestion-value {
 		margin: 0;
 		font-size: 1.25rem;
-		font-weight: 600;
+		font-weight: 560;
 		line-height: 1.2;
-		letter-spacing: -0.015em;
+		letter-spacing: 0;
 		color: var(--color-text);
 	}
 
@@ -529,7 +542,7 @@
 		min-height: auto;
 		padding: 0;
 		font-size: 0.9rem;
-		font-weight: 600;
+		font-weight: 550;
 		line-height: 1.4;
 		color: var(--color-muted-text);
 		cursor: pointer;
@@ -575,7 +588,8 @@
 		gap: 16px;
 		padding: 0 18px;
 		font-size: 1rem;
-		font-weight: 650;
+		font-weight: 600;
+		letter-spacing: -0.005em;
 		line-height: 1.3;
 		color: var(--color-text);
 		cursor: pointer;

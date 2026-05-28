@@ -8,6 +8,7 @@
 		decimalPlaces?: number,
 		useDecimalComma?: boolean,
 		enforceInteger?: boolean,
+		wideValue?: boolean,
 		ariaLabel: string,
 		decreaseAriaLabel: string,
 		increaseAriaLabel: string
@@ -21,6 +22,7 @@
 		decimalPlaces = 0,
 		useDecimalComma = false,
 		enforceInteger = true,
+		wideValue = false,
 		ariaLabel,
 		decreaseAriaLabel,
 		increaseAriaLabel
@@ -155,7 +157,7 @@
 	}
 </script>
 
-<div class="stepper-input-control" aria-label={ariaLabel}>
+<div class={wideValue ? 'stepper-input-control wide-value' : 'stepper-input-control'} aria-label={ariaLabel}>
 	<button
 		type="button"
 		class="stepper-button"
@@ -220,7 +222,7 @@
 	.stepper-button {
 		width: 44px;
 		font-size: 1.35rem;
-		font-weight: 450;
+		font-weight: 430;
 		cursor: pointer;
 	}
 
@@ -245,14 +247,24 @@
 		color: var(--color-text);
 		font: inherit;
 		font-size: 1.25rem;
-		font-weight: 550;
+		font-weight: 500;
 		line-height: 1;
 		text-align: center;
-		letter-spacing: -0.01em;
+		letter-spacing: 0;
 		outline: none;
 		appearance: textfield;
 	}
+	
 
+	.stepper-input-control.wide-value .stepper-value {
+		min-width: 5.4rem;
+		padding-inline: 0.55rem;
+	}
+
+	.stepper-input-control.wide-value .stepper-value input {
+		width: 5ch;
+	}
+	
 	.stepper-value input:focus {
 		outline: none;
 	}
@@ -264,7 +276,7 @@
 
 	.stepper-value span {
 		font-size: 0.96rem;
-		font-weight: 500;
+		font-weight: 460;
 		color: var(--color-muted-text);
 	}
 </style>

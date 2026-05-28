@@ -363,9 +363,9 @@
 	.about-section h2 {
 		margin: 0;
 		font-size: 0.96rem;
-		font-weight: 750;
-		line-height: 1.2;
-		letter-spacing: -0.015em;
+		font-weight: 620;
+		line-height: 1.22;
+		letter-spacing: -0.005em;
 		color: var(--color-text);
 	}
 
@@ -378,7 +378,7 @@
 		display: grid;
 		gap: 0.4rem;
 		font-size: 0.95rem;
-		font-weight: 650;
+		font-weight: 560;
 		color: var(--color-text);
 	}
 
@@ -394,7 +394,7 @@
 	legend {
 		padding: 0;
 		font-size: 0.95rem;
-		font-weight: 650;
+		font-weight: 560;
 		color: var(--color-text);
 	}
 
@@ -454,7 +454,7 @@
 		box-shadow: none;
 		color: var(--color-text);
 		font-size: 0.86rem;
-		font-weight: 500;
+		font-weight: 480;
 		cursor: pointer;
 	}
 
@@ -480,7 +480,7 @@
 		box-shadow: none;
 		color: var(--color-muted-text);
 		font-size: 0.86rem;
-		font-weight: 650;
+		font-weight: 560;
 		cursor: pointer;
 	}
 
@@ -529,7 +529,7 @@
 		box-shadow: none;
 		color: var(--color-button-text);
 		font-size: 0.86rem;
-		font-weight: 750;
+		font-weight: 650;
 		cursor: pointer;
 	}
 
@@ -570,7 +570,7 @@
 		width: 100%;
 		border: 0;
 		padding: 0 1rem;
-		font-weight: 750;
+		font-weight: 650;
 		color: var(--color-button-text);
 		background: var(--color-primary-accent);
 		box-shadow: 0 10px 22px var(--color-shadow);
