@@ -213,12 +213,12 @@
 
 						<label class="radio-option">
 							<input type="radio" name="babySex" value="female" bind:group={draftSetup.babySex} />
-							<span>Female</span>
+							<span>Girl</span>
 						</label>
 
 						<label class="radio-option">
 							<input type="radio" name="babySex" value="male" bind:group={draftSetup.babySex} />
-							<span>Male</span>
+							<span>Boy</span>
 						</label>
 
 						<label class="radio-option">
@@ -228,7 +228,7 @@
 								value="unspecified"
 								bind:group={draftSetup.babySex}
 							/>
-							<span>Unspecified</span>
+							<span>Average</span>
 						</label>
 					</fieldset>
 				</div>
