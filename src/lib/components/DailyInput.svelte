@@ -36,6 +36,14 @@
 	}
 
 	/**
+	 * @param {FocusEvent} event
+	 */
+	function handleFormulaConsumedFocus(event) {
+		const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+		input.select();
+	}
+
+	/**
 	 * @param {number} formulaFeedsLeftToday
 	 */
 	function handleFeedsLeftChange(formulaFeedsLeftToday) {
@@ -51,7 +59,7 @@
 
 	<div class="daily-controls">
 		<label class="control-group">
-			<span class="control-label">Formula consumed</span>
+			<span class="control-label">Formula consumed, ml</span>
 
 			<div class="compact-input">
 				<input
@@ -61,10 +69,9 @@
 					inputmode="numeric"
 					value={formulaConsumedInput}
 					oninput={handleFormulaConsumedInput}
+					onfocus={handleFormulaConsumedFocus}
 					aria-label="Formula consumed today in millilitres"
 				/>
-
-				<span class="unit">ml</span>
 			</div>
 		</label>
 
@@ -131,16 +138,15 @@
 		min-height: 52px;
 		display: inline-flex;
 		align-items: center;
-		gap: 8px;
 		padding: 0 16px;
-		border: 1px solid color-mix(in srgb, var(--color-info) 24%, var(--color-border));
+		border: 1px solid color-mix(in srgb, var(--color-info) 28%, var(--color-border));
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--color-info) 10%, var(--color-surface));
 	}
 
 	.compact-input input {
-		width: 4.5ch;
-		min-width: 4.5ch;
+		width: 5ch;
+		min-width: 5ch;
 		border: 0;
 		background: transparent;
 		font: inherit;
@@ -148,6 +154,8 @@
 		font-weight: 460;
 		line-height: 1;
 		letter-spacing: 0;
+		font-variant-numeric: tabular-nums;
+		text-align: center;
 		color: var(--color-text);
 		outline: none;
 		appearance: textfield;
@@ -159,10 +167,8 @@
 		appearance: none;
 	}
 
-	.unit {
-		font-size: 0.96rem;
-		font-weight: 460;
-		color: var(--color-muted-text);
+	.compact-input:focus-within {
+		border-color: color-mix(in srgb, var(--color-info) 42%, var(--color-border));
 	}
 
 	@media (min-width: 390px) {

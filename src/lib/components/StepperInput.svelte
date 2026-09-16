@@ -121,6 +121,16 @@
 		onChange(normalizeValue(parsedValue));
 	}
 
+	/**
+	 * @param {FocusEvent} event
+	 */
+	function handleFocus(event) {
+		isFocused = true;
+
+		const input = /** @type {HTMLInputElement} */ (event.currentTarget);
+		input.select();
+	}
+
 	function restoreSafeValue() {
 		const parsedValue = parseInputValue(inputValue);
 
@@ -174,7 +184,7 @@
 			inputmode={decimalPlaces > 0 ? 'decimal' : 'numeric'}
 			pattern={decimalPlaces > 0 ? undefined : '[0-9]*'}
 			value={inputValue}
-			onfocus={() => (isFocused = true)}
+			onfocus={handleFocus}
 			oninput={handleInput}
 			onblur={restoreSafeValue}
 			onkeydown={handleKeydown}
