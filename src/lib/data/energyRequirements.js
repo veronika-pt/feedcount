@@ -54,38 +54,38 @@ export const infantEnergyRequirements = [
 	{
 		ageMonthsMin: 1,
 		ageMonthsMax: 2,
-		all: { female: 101, male: 104, unspecified: 102 },
-		formulaFed: { female: 108, male: 110, unspecified: 109 }
+		all: { female: 107, male: 113, unspecified: 110 },
+		formulaFed: { female: 117, male: 122, unspecified: 120 }
 	},
 	{
 		ageMonthsMin: 2,
 		ageMonthsMax: 3,
-		all: { female: 94, male: 95, unspecified: 95 },
-		formulaFed: { female: 101, male: 100, unspecified: 100 }
+		all: { female: 101, male: 104, unspecified: 102 },
+		formulaFed: { female: 108, male: 110, unspecified: 109 }
 	},
 	{
 		ageMonthsMin: 3,
 		ageMonthsMax: 4,
-		all: { female: 84, male: 82, unspecified: 83 },
-		formulaFed: { female: 89, male: 86, unspecified: 87 }
+		all: { female: 94, male: 95, unspecified: 95 },
+		formulaFed: { female: 101, male: 100, unspecified: 100 }
 	},
 	{
 		ageMonthsMin: 4,
 		ageMonthsMax: 5,
-		all: { female: 82, male: 81, unspecified: 82 },
-		formulaFed: { female: 87, male: 85, unspecified: 86 }
+		all: { female: 84, male: 82, unspecified: 83 },
+		formulaFed: { female: 89, male: 86, unspecified: 87 }
 	},
 	{
 		ageMonthsMin: 5,
 		ageMonthsMax: 6,
-		all: { female: 81, male: 81, unspecified: 81 },
-		formulaFed: { female: 85, male: 83, unspecified: 84 }
+		all: { female: 82, male: 81, unspecified: 82 },
+		formulaFed: { female: 87, male: 85, unspecified: 86 }
 	},
 	{
 		ageMonthsMin: 6,
 		ageMonthsMax: 7,
-		all: { female: 78, male: 79, unspecified: 79 },
-		formulaFed: { female: 81, male: 81, unspecified: 81 }
+		all: { female: 81, male: 81, unspecified: 81 },
+		formulaFed: { female: 85, male: 83, unspecified: 84 }
 	},
 	{
 		ageMonthsMin: 7,
@@ -102,8 +102,8 @@ export const infantEnergyRequirements = [
 	{
 		ageMonthsMin: 9,
 		ageMonthsMax: 10,
-		all: { female: 79, male: 80, unspecified: 80 },
-		formulaFed: { female: 81, male: 82, unspecified: 81 }
+		all: { female: 78, male: 79, unspecified: 79 },
+		formulaFed: { female: 81, male: 81, unspecified: 81 }
 	},
 	{
 		ageMonthsMin: 10,
@@ -114,6 +114,12 @@ export const infantEnergyRequirements = [
 	{
 		ageMonthsMin: 11,
 		ageMonthsMax: 12,
+		all: { female: 79, male: 80, unspecified: 80 },
+		formulaFed: { female: 81, male: 82, unspecified: 81 }
+	},
+	{
+		ageMonthsMin: 12,
+		ageMonthsMax: 13,
 		all: { female: 79, male: 81, unspecified: 80 },
 		formulaFed: { female: 81, male: 82, unspecified: 81 }
 	}
