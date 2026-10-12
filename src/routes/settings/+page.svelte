@@ -1,15 +1,11 @@
 <script>
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import SetupForm from '$lib/components/SetupForm.svelte';
-	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
-
-	onMount(() => {
-		initialiseSetup();
-	});
+	import { setup, saveSetupForm } from '$lib/stores/setupStore.js';
 
 	function goHome() {
-		goto('/');
+		goto(resolve('/'));
 	}
 </script>
 
@@ -22,16 +18,14 @@
 </svelte:head>
 
 <main class="settings-page">
-	<button class="back-button" type="button" onclick={goHome}>
-		← Back
-	</button>
+	<button class="back-button" type="button" onclick={goHome}> ← Back </button>
 
 	<section class="settings-header">
 		<h1>FeedCount settings</h1>
 		<p>Update the profile and feeding details used for daily formula estimates.</p>
 	</section>
 
-	<SetupForm setup={$setup} onSave={updateSetup} />
+	<SetupForm setup={$setup} onSave={saveSetupForm} />
 </main>
 
 <style>

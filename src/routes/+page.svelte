@@ -1,8 +1,9 @@
 <script>
 	import { onMount } from 'svelte';
+	import { resolve } from '$app/paths';
 	import DailyInput from '$lib/components/DailyInput.svelte';
 	import StepperInput from '$lib/components/StepperInput.svelte';
-	import { initialiseSetup, setup, updateSetup } from '$lib/stores/setupStore.js';
+	import { setup, updateSetup } from '$lib/stores/setupStore.js';
 	import { getCompletedAgeMonths } from '$lib/calculations/age.js';
 	import { getDailyEnergyTarget } from '$lib/calculations/dailyEnergyTarget.js';
 	import { getDailyFormulaTargetMl } from '$lib/calculations/dailyFormulaTarget.js';
@@ -63,7 +64,6 @@
 	);
 
 	onMount(() => {
-		initialiseSetup();
 		dailyInputState.load();
 	});
 
@@ -172,7 +172,7 @@
 			<p class="intro">Practical estimates for planning today’s feeds. Not medical advice.</p>
 		</div>
 
-		<a class="settings-link" href="/settings">Settings</a>
+		<a class="settings-link" href={resolve('/settings')}>Settings</a>
 	</header>
 
 	<DailyInput dailyInput={dailyInputState.dailyInput} onChange={dailyInputState.update} />
@@ -183,12 +183,12 @@
 			<p class="body-text">Add the missing setup details in Settings to see today’s estimate.</p>
 
 			<ul class="message-list">
-				{#each setupValidation.messages as message}
+				{#each setupValidation.messages as message (message)}
 					<li>{message}</li>
 				{/each}
 			</ul>
 
-			<a class="inline-settings-link" href="/settings">Open Settings</a>
+			<a class="inline-settings-link" href={resolve('/settings')}>Open Settings</a>
 		</section>
 	{:else if !dailyInputValidation.isValid}
 		<section class="card">
@@ -196,7 +196,7 @@
 			<p class="body-text">Check today’s formula intake to update the estimate.</p>
 
 			<ul class="message-list">
-				{#each dailyInputValidation.messages as message}
+				{#each dailyInputValidation.messages as message (message)}
 					<li>{message}</li>
 				{/each}
 			</ul>
@@ -239,7 +239,7 @@
 						<summary>See other options</summary>
 
 						<div class="other-suggestions">
-							{#each otherBottleDistributionSuggestions as suggestion}
+							{#each otherBottleDistributionSuggestions as suggestion (suggestion.bottlesMl.join(','))}
 								<div class="suggestion secondary-suggestion">
 									<p class="suggestion-value">
 										{formatBottleCombination(suggestion.bottlesMl)}
@@ -257,26 +257,26 @@
 			{/if}
 		</section>
 
-<section class="card weight-card" aria-labelledby="current-weight-title">
-	<div class="weight-copy">
-		<p id="current-weight-title" class="card-title">Current weight, kg</p>
-		<p class="weight-helper">Adjusts the daily estimate.</p>
-	</div>
+		<section class="card weight-card" aria-labelledby="current-weight-title">
+			<div class="weight-copy">
+				<p id="current-weight-title" class="card-title">Current weight, kg</p>
+				<p class="weight-helper">Adjusts the daily estimate.</p>
+			</div>
 
-	<StepperInput
-		value={$setup.currentWeightKg}
-		min={0.1}
-		step={0.1}
-		wideValue={true}
-		decimalPlaces={1}
-		useDecimalComma={true}
-		enforceInteger={false}
-		ariaLabel="Current weight in kilograms"
-		decreaseAriaLabel="Decrease current weight by 100 grams"
-		increaseAriaLabel="Increase current weight by 100 grams"
-		onChange={handleCurrentWeightChange}
-	/>
-</section>
+			<StepperInput
+				value={$setup.currentWeightKg}
+				min={0.1}
+				step={0.1}
+				wideValue={true}
+				decimalPlaces={1}
+				useDecimalComma={true}
+				enforceInteger={false}
+				ariaLabel="Current weight in kilograms"
+				decreaseAriaLabel="Decrease current weight by 100 grams"
+				increaseAriaLabel="Increase current weight by 100 grams"
+				onChange={handleCurrentWeightChange}
+			/>
+		</section>
 
 		<section class="card reference-card">
 			<p class="card-title">Daily estimate</p>
@@ -291,7 +291,7 @@
 			<p class="card-title">Formula estimate is not ready yet</p>
 			<p class="body-text">Check Settings, then save again.</p>
 
-			<a class="inline-settings-link" href="/settings">Open Settings</a>
+			<a class="inline-settings-link" href={resolve('/settings')}>Open Settings</a>
 		</section>
 	{/if}
 
@@ -300,27 +300,26 @@
 
 		<div class="about-content">
 			<p>
-	FeedCount estimates a suitable daily amount of formula based on your baby’s weight,
-	age, sex, and the energy content of the formula.
-</p>
+				FeedCount estimates a suitable daily amount of formula based on your baby’s weight, age,
+				sex, and the energy content of the formula.
+			</p>
 
-<p>
-	The reference energy values are based on the Human energy requirements: 
-	<a href="https://www.fao.org/4/y5686e/y5686e05.htm" target="_blank" rel="noreferrer">
-		Report of a Joint FAO/WHO/UNU Expert Consultation
-	</a>,
-	which provides infant energy requirements by age, weight, and sex.
-</p>
+			<p>
+				The reference energy values are based on the Human energy requirements:
+				<a href="https://www.fao.org/4/y5686e/y5686e05.htm" target="_blank" rel="noreferrer">
+					Report of a Joint FAO/WHO/UNU Expert Consultation
+				</a>, which provides infant energy requirements by age, weight, and sex.
+			</p>
 
-<p>
-	FeedCount then compares this estimate with today’s entered formula intake, feeds left,
-	and saved bottle sizes to suggest a practical bottle split for the rest of the day.
-</p>
+			<p>
+				FeedCount then compares this estimate with today’s entered formula intake, feeds left, and
+				saved bottle sizes to suggest a practical bottle split for the rest of the day.
+			</p>
 
-<p>
-	The numbers are planning estimates only. They are not medical targets and do not replace
-	advice from a clinician.
-</p>
+			<p>
+				The numbers are planning estimates only. They are not medical targets and do not replace
+				advice from a clinician.
+			</p>
 		</div>
 	</details>
 </main>

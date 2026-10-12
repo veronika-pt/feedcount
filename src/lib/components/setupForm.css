@@ -1,0 +1,341 @@
+.setup-card {
+	display: grid;
+	width: 100%;
+	max-width: 420px;
+	color-scheme: light dark;
+}
+
+.setup-card form {
+	display: grid;
+}
+
+.setup-card .form-content {
+	display: grid;
+	gap: 0.85rem;
+	padding-bottom: 5rem;
+}
+
+.setup-card .form-section,
+.setup-card .about-section {
+	display: grid;
+	gap: 1rem;
+	padding: 1rem;
+	border: 1px solid color-mix(in srgb, var(--color-primary-accent) 14%, var(--color-border));
+	border-radius: 1.35rem;
+	background: var(--color-card-bg);
+	box-shadow: 0 10px 26px var(--color-shadow);
+}
+
+.setup-card .section-header {
+	display: grid;
+	gap: 0.25rem;
+}
+
+.setup-card .section-header h2,
+.setup-card .about-section h2 {
+	margin: 0;
+	font-size: 0.96rem;
+	font-weight: 620;
+	line-height: 1.22;
+	letter-spacing: -0.005em;
+	color: var(--color-text);
+}
+
+.setup-card .section-fields {
+	display: grid;
+	gap: 0.9rem;
+}
+
+.setup-card label {
+	display: grid;
+	gap: 0.4rem;
+	font-size: 0.95rem;
+	font-weight: 560;
+	color: var(--color-text);
+}
+
+.setup-card .field {
+	display: grid;
+	gap: 0.45rem;
+	margin: 0.25rem 0 0;
+	padding: 0;
+	border: 0;
+}
+
+.setup-card legend {
+	padding: 0;
+	font-size: 0.95rem;
+	font-weight: 560;
+	color: var(--color-text);
+}
+
+.setup-card .radio-option {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	min-height: 1.75rem;
+	font-size: 0.95rem;
+	font-weight: 400;
+	color: var(--color-text);
+}
+
+.setup-card .radio-option input {
+	width: 1rem;
+	height: 1rem;
+	min-height: auto;
+	margin: 0;
+	padding: 0;
+}
+
+.setup-card input,
+.setup-card button {
+	min-height: 2.75rem;
+	border-radius: 0.8rem;
+	font: inherit;
+}
+
+.setup-card input {
+	border: 1px solid color-mix(in srgb, var(--color-primary-accent) 18%, var(--color-border));
+	padding: 0 0.85rem;
+	background: color-mix(in srgb, var(--color-surface) 88%, var(--color-soft-accent));
+	color: var(--color-text);
+	font-weight: 400;
+}
+
+.setup-card input[type='radio'] {
+	accent-color: var(--color-primary-accent);
+}
+
+.setup-card .bottle-size-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.45rem;
+}
+
+.setup-card .bottle-size-chip {
+	display: inline-flex;
+	width: auto;
+	min-height: 2.1rem;
+	align-items: center;
+	gap: 0.35rem;
+	padding: 0 0.7rem;
+	border: 1px solid color-mix(in srgb, var(--color-primary-accent) 28%, var(--color-border));
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--color-primary-accent) 16%, var(--color-surface));
+	box-shadow: none;
+	color: var(--color-text);
+	font-size: 0.86rem;
+	font-weight: 480;
+	cursor: pointer;
+}
+
+.setup-card .bottle-size-chip span:last-child {
+	color: var(--color-muted-text);
+	font-size: 0.95rem;
+	font-weight: 400;
+	line-height: 1;
+}
+
+.setup-card .bottle-size-chip:disabled {
+	cursor: not-allowed;
+	opacity: 0.55;
+}
+
+.setup-card .add-bottle-size-button {
+	width: fit-content;
+	min-height: 2.25rem;
+	padding: 0 0.8rem;
+	border: 1px solid color-mix(in srgb, var(--color-info) 32%, var(--color-border));
+	border-radius: 999px;
+	background: color-mix(in srgb, var(--color-info) 10%, transparent);
+	box-shadow: none;
+	color: var(--color-muted-text);
+	font-size: 0.86rem;
+	font-weight: 560;
+	cursor: pointer;
+}
+
+.setup-card .add-bottle-size-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto auto;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.setup-card .add-bottle-size-field {
+	gap: 0;
+}
+
+.setup-card .input-with-unit {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	border: 1px solid var(--color-border);
+	border-radius: 0.8rem;
+	background: var(--color-surface);
+	overflow: hidden;
+}
+
+.setup-card .input-with-unit input {
+	min-height: 2.5rem;
+	border: 0;
+	border-radius: 0;
+	padding-right: 0.35rem;
+}
+
+.setup-card .input-with-unit span {
+	padding-right: 0.85rem;
+	color: var(--color-muted-text);
+	font-size: 0.86rem;
+	font-weight: 500;
+}
+
+.setup-card .inline-button {
+	width: auto;
+	min-height: 2.5rem;
+	padding: 0 0.8rem;
+	border: 0;
+	border-radius: 0.8rem;
+	background: var(--color-primary-accent);
+	box-shadow: none;
+	color: var(--color-button-text);
+	font-size: 0.86rem;
+	font-weight: 650;
+	cursor: pointer;
+}
+
+.setup-card .inline-button.secondary {
+	border: 1px solid var(--color-border);
+	background: transparent;
+	color: var(--color-muted-text);
+}
+
+.setup-card .about-section {
+	gap: 0.35rem;
+	background: color-mix(in srgb, var(--color-card-bg) 78%, var(--color-soft-accent));
+	box-shadow: none;
+	color: var(--color-muted-text);
+}
+
+.setup-card .about-section h2 {
+	font-size: 0.88rem;
+	color: var(--color-muted-text);
+}
+
+.setup-card .about-section p {
+	margin: 0;
+	font-size: 0.85rem;
+	line-height: 1.45;
+	color: var(--color-muted-text);
+}
+
+.setup-card .save-bar {
+	position: sticky;
+	bottom: calc(0.75rem + env(safe-area-inset-bottom));
+	z-index: 10;
+	padding: 0;
+	background: transparent;
+}
+
+.setup-card .save-button {
+	width: 100%;
+	border: 0;
+	padding: 0 1rem;
+	font-weight: 650;
+	color: var(--color-button-text);
+	background: var(--color-primary-accent);
+	box-shadow: 0 10px 22px var(--color-shadow);
+	cursor: pointer;
+	transition:
+		transform 120ms ease,
+		opacity 120ms ease,
+		filter 120ms ease;
+}
+
+.setup-card button:active {
+	transform: scale(0.98);
+	filter: brightness(0.95);
+}
+
+.setup-card .save-button.saved {
+	opacity: 0.9;
+	background: var(--color-success);
+}
+
+.setup-card .sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+@media (max-width: 360px) {
+	.setup-card .add-bottle-size-row {
+		grid-template-columns: 1fr;
+	}
+
+	.setup-card .inline-button {
+		width: 100%;
+	}
+}
+
+.setup-card input {
+	width: 100%;
+	min-width: 0;
+}
+.setup-card .helper-text {
+	margin: 0;
+	color: var(--color-muted-text);
+	font-size: 0.85rem;
+	font-weight: 400;
+	line-height: 1.45;
+}
+.setup-card .volume-callout {
+	padding: 0.85rem;
+	border-radius: 0.8rem;
+	background: color-mix(in srgb, var(--color-info) 12%, var(--color-surface));
+}
+.setup-card .form-errors {
+	padding: 0.85rem 1rem;
+	border: 1px solid var(--color-warning);
+	border-radius: 0.8rem;
+	background: var(--color-surface);
+}
+.setup-card .form-errors ul {
+	margin: 0;
+	padding-left: 1.2rem;
+}
+.setup-card .form-errors p {
+	margin: 0;
+}
+.setup-card .save-bar {
+	display: grid;
+	gap: 0.75rem;
+}
+.setup-card .step-back {
+	justify-self: start;
+}
+.setup-card :focus-visible {
+	outline: 2px solid var(--color-primary-accent);
+	outline-offset: 3px;
+}
+.setup-card h1 {
+	margin: 0;
+	font-size: clamp(1.55rem, 6vw, 1.85rem);
+	font-weight: 650;
+	line-height: 1.1;
+	letter-spacing: -0.02em;
+}
+.setup-card h1:focus {
+	outline: none;
+}
+.setup-card .step-progress {
+	margin: 0;
+	color: var(--color-muted-text);
+	font-size: 0.85rem;
+}

@@ -20,6 +20,12 @@
  * @property {number} currentWeightKg
  * @property {number} formulaKcalPer100ml
  * @property {number[]} bottleSizesMl
+ * @property {boolean} onboardingCompleted
+ */
+
+/**
+ * Editable weight text allows an empty field and either decimal separator before validation.
+ * @typedef {Omit<FeedCountSetup, 'currentWeightKg'> & { currentWeightKg: string }} SetupDraft
  */
 
 /** @type {FeedCountSetup} */
@@ -30,5 +36,6 @@ export const defaultSetup = {
 	feedingMode: 'mixed',
 	currentWeightKg: 6.7,
 	formulaKcalPer100ml: 66,
-	bottleSizesMl: [70, 105, 140, 175, 210]
+	bottleSizesMl: [70, 105, 140, 175, 210],
+	onboardingCompleted: false
 };
