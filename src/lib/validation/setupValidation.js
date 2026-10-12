@@ -42,7 +42,7 @@ export function validateBabyDetails(setup, referenceDate = new Date()) {
 	}
 	// Use the existing age calculation and supported energy reference bands.
 	if (messages.length === 0 && getDailyEnergyTarget(setup, referenceDate) === null) {
-		messages.push('FeedCount estimates formula intake for babies younger than 12 months.');
+		messages.push('FeedCount estimates formula intake for babies up to 12 months old.');
 	}
 	return { isValid: messages.length === 0, messages };
 }

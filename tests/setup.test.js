@@ -116,7 +116,7 @@ test('completion survives reload with the entered weight and bottles available t
 	assert.equal('age' in saved, false);
 	const energy = getDailyEnergyTarget(saved, referenceDate);
 	assert.equal(energy?.ageMonths, 6);
-	assert.equal(energy?.kcalPerDay, 569);
+	assert.equal(energy?.kcalPerDay, 583);
 	const target = getDailyFormulaTargetMl(energy?.kcalPerDay, saved.formulaKcalPer100ml);
 	assert.ok(target && target > 0);
 	const suggestions = getBottleDistributionSuggestions({
@@ -161,14 +161,14 @@ test('a failed persistence write cannot mark onboarding complete in memory', () 
 });
 
 test('baby details reject invalid, future, and unsupported birth dates using the calculation age range', () => {
-	for (const birthDate of ['', '2026-02-30', '2026-13-01', '2026-09-17', '2025-09-16']) {
+	for (const birthDate of ['', '2026-02-30', '2026-13-01', '2026-09-17', '2025-08-16']) {
 		assert.equal(
 			validateBabyDetails({ ...validSetup, birthDate }, referenceDate).isValid,
 			false,
 			birthDate
 		);
 	}
-	for (const birthDate of ['2026-09-16', '2025-09-17']) {
+	for (const birthDate of ['2026-09-16', '2025-09-16', '2025-08-17']) {
 		assert.equal(
 			validateBabyDetails({ ...validSetup, birthDate }, referenceDate).isValid,
 			true,
