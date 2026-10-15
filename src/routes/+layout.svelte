@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import { initialiseSetup, setup } from '$lib/stores/setupStore.js';
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
@@ -29,6 +29,10 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="apple-touch-icon" sizes="180x180" href={`${base}/apple-touch-icon.png`} />
+	<link rel="manifest" href={`${base}/manifest.webmanifest`} />
+	<meta name="theme-color" content="#f7f1e8" />
+	<meta name="theme-color" content="#101716" media="(prefers-color-scheme: dark)" />
 </svelte:head>
 
 {#if canRenderPage}

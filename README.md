@@ -91,6 +91,23 @@ FeedCount is built with:
 
 ## Deployment
 
+### Home Screen icons
+
+The browser favicon remains `src/lib/assets/favicon.svg`. Home Screen PNGs reuse
+its bottle artwork, centred on an opaque square `#f7f1e8` background, without
+the favicon's rounded tile corners:
+
+- `static/apple-touch-icon.png` — 180×180, linked as the Apple Touch Icon.
+- `static/icons/icon-192.png` — 192×192, manifest icon.
+- `static/icons/icon-512.png` — 512×512, manifest icon for both ordinary and maskable use.
+
+The artwork fits within the maskable icon's central 80% safe circle. The shared
+layout links `static/manifest.webmanifest`, which uses FeedCount's name and light
+background/theme color. The HTML theme color also follows the app's dark theme.
+
+To regenerate the PNGs after editing the favicon, install ImageMagick and run
+`node scripts/generate-icons.mjs`. ImageMagick is only needed for regeneration.
+
 The app is deployed on Netlify with a custom subdomain:
 
 https://feedcount.veronika.pt
