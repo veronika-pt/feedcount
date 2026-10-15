@@ -295,6 +295,15 @@
 	min-width: 0;
 }
 
+/* iOS WebKit forces native date inputs to content-box, adding padding beyond 100% width. */
+@supports (-webkit-touch-callout: none) {
+	.setup-card input[type='date'] {
+		-webkit-appearance: none;
+		appearance: none;
+		box-sizing: border-box;
+	}
+}
+
 .setup-card .helper-text {
 	margin: 0;
 	color: var(--color-muted-text);
