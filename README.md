@@ -22,7 +22,6 @@ The current MVP includes:
   - birth date
   - sex
   - current weight
-  - feeding mode
   - formula kcal per 100 ml
   - usual bottle sizes
 - Local setup storage using `localStorage`
@@ -48,7 +47,11 @@ FeedCount uses reference energy requirement values from the Food and Agriculture
 
 **Human energy requirements: Report of a Joint FAO/WHO/UNU Expert Consultation**
 
+Only the **Formula-fed** column of [Table 3.3](https://www.fao.org/4/y5686e/y5686e05.htm) is used. Legacy `mixed` profiles are interpreted as `formulaOnly` on load, preserving other settings. Rows 1–12 map to age intervals 0–1 through 11–12 months; the final row is retained at 12 completed months.
+
 These values are used as a reference for estimating daily energy needs by age, sex, and weight. The app then converts the estimated energy need into formula volume using the formula’s kcal per 100 ml value.
+
+The estimate converts the full daily energy requirement into formula volume. It does not subtract energy from complementary foods or breast milk, and therefore is not a required milk intake for a baby eating solids.
 
 ## Data storage
 

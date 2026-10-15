@@ -59,7 +59,7 @@
 			formatBabySexLabel($setup.babySex),
 			formatAgeLabel($setup.birthDate),
 			formatWeightLabel($setup.currentWeightKg),
-			formatFeedingModeLabel($setup.feedingMode)
+			'formula only'
 		].filter(Boolean)
 	);
 
@@ -145,18 +145,6 @@
 		}
 
 		return `${weightKg.toFixed(1)} kg`;
-	}
-
-	/**
-	 * @param {import('$lib/data/setupDefaults.js').FeedingMode} feedingMode
-	 * @returns {string}
-	 */
-	function formatFeedingModeLabel(feedingMode) {
-		if (feedingMode === 'formulaOnly') {
-			return 'formula only';
-		}
-
-		return 'mixed feeding';
 	}
 </script>
 
@@ -300,8 +288,8 @@
 
 		<div class="about-content">
 			<p>
-				FeedCount estimates a suitable daily amount of formula based on your baby’s weight, age,
-				sex, and the energy content of the formula.
+				FeedCount estimates the formula volume equivalent of daily energy needs based on your baby’s
+				weight, age, sex, and the energy content of the formula.
 			</p>
 
 			<p>
@@ -313,7 +301,9 @@
 
 			<p>
 				FeedCount then compares this estimate with today’s entered formula intake, feeds left, and
-				saved bottle sizes to suggest a practical bottle split for the rest of the day.
+				saved bottle sizes to suggest a practical bottle split for the rest of the day. Energy from
+				complementary foods is not subtracted, so this is not a required milk intake when solids are
+				part of the diet.
 			</p>
 
 			<p>

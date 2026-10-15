@@ -51,14 +51,15 @@ function toValidSetup(value) {
 		? partialSetup.onboardingCompleted === true
 		: isConfigured;
 
-	// Already valid profiles need no coercion, sorting, or rewriting of saved values.
+	// Retire the legacy mixed default while preserving all entered profile values.
 	if (isConfigured) {
-		return { ...defaultSetup, ...partialSetup, onboardingCompleted };
+		return { ...defaultSetup, ...partialSetup, feedingMode: 'formulaOnly', onboardingCompleted };
 	}
 
 	return {
 		...defaultSetup,
 		...partialSetup,
+		feedingMode: 'formulaOnly',
 		onboardingCompleted,
 		birthDate:
 			typeof partialSetup.birthDate === 'string' ? partialSetup.birthDate : defaultSetup.birthDate,

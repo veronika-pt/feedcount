@@ -1,5 +1,4 @@
 import { getCompletedAgeMonths } from '$lib/calculations/age.js';
-import { getEnergyReferenceType } from '$lib/calculations/feedingMode.js';
 import { getEnergyRequirementKcalPerKg } from '$lib/calculations/energyRequirement.js';
 
 /**
@@ -40,13 +39,7 @@ export function getDailyEnergyTarget(input, referenceDate = new Date()) {
 		return null;
 	}
 
-	const referenceType = getEnergyReferenceType(input.feedingMode);
-
-	const kcalPerKgPerDay = getEnergyRequirementKcalPerKg(
-		ageMonths,
-		input.babySex,
-		referenceType
-	);
+	const kcalPerKgPerDay = getEnergyRequirementKcalPerKg(ageMonths, input.babySex, 'formulaFed');
 
 	if (kcalPerKgPerDay === null) {
 		return null;

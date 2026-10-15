@@ -24,6 +24,7 @@ const { validateSetup, validateBabyDetails } =
 	await import('../src/lib/validation/setupValidation.js');
 const { getDailyEnergyTarget } = await import('../src/lib/calculations/dailyEnergyTarget.js');
 const { getDailyFormulaTargetMl } = await import('../src/lib/calculations/dailyFormulaTarget.js');
+const { getRemainingFormulaMl } = await import('../src/lib/calculations/remainingFormula.js');
 const { getBottleDistributionSuggestions } =
 	await import('../src/lib/calculations/bottleDistribution.js');
 
@@ -349,4 +350,75 @@ test('a failed latest-record read prevents saving against fallback defaults', ()
 	});
 	assert.throws(() => saveSetupForm(validSetup, defaultSetup), /Read unavailable/);
 	assert.equal(wrote, false);
+});
+
+test('legacy mixed and missing modes load as formula only without losing profile or daily inputs', () => {
+	for (const feedingMode of ['mixed', undefined]) {
+		const legacy = { ...validSetup, feedingMode, onboardingCompleted: true };
+		storage.set('feedcount-setup', JSON.stringify(legacy));
+		storage.set('feedcount-daily-input', 'unchanged daily input');
+		initialiseSetup();
+		assert.deepEqual(get(setup), { ...legacy, feedingMode: 'formulaOnly' });
+		assert.equal(updateSetup({ ...get(setup), currentWeightKg: 7.5 }).status, 'saved');
+		assert.equal(JSON.parse(storage.get('feedcount-setup')).feedingMode, 'formulaOnly');
+		assert.equal(storage.get('feedcount-daily-input'), 'unchanged daily input');
+	}
+});
+
+test('each completed-month band matches FAO Table 3.3 formula-fed boys, girls and mean columns', () => {
+	// Independently transcribed source rows 1–12 (kcal/kg/day), not derived from app data.
+	const sourceRows = [
+		[122, 117, 120],
+		[110, 108, 109],
+		[100, 101, 100],
+		[86, 89, 87],
+		[85, 87, 86],
+		[83, 85, 84],
+		[81, 81, 81],
+		[81, 81, 81],
+		[81, 81, 81],
+		[82, 81, 81],
+		[82, 81, 81],
+		[82, 81, 81]
+	];
+	const sexes = /** @type {const} */ (['male', 'female', 'unspecified']);
+	for (let month = 0; month < 12; month++) {
+		for (const [index, babySex] of sexes.entries()) {
+			const input = { ...validSetup, birthDate: '2025-09-16', babySex, currentWeightKg: 10 };
+			for (const feedingMode of /** @type {const} */ (['mixed', 'formulaOnly', undefined])) {
+				const result = getDailyEnergyTarget(
+					{ ...input, feedingMode },
+					new Date(2025, 8 + month, 16, 12)
+				);
+				assert.equal(result?.ageMonths, month);
+				assert.equal(result?.kcalPerKgPerDay, sourceRows[month][index]);
+			}
+		}
+	}
+});
+
+test('Sara screenshot inputs use formula-fed reference and retain correct remainder and bottle sums', () => {
+	const input = {
+		...validSetup,
+		birthDate: '2026-02-15',
+		babySex: /** @type {const} */ ('female'),
+		feedingMode: /** @type {const} */ ('mixed'),
+		currentWeightKg: 10,
+		formulaKcalPer100ml: 68
+	};
+	const energy = getDailyEnergyTarget(input, new Date('2026-10-15T12:00:00'));
+	assert.equal(energy?.kcalPerKgPerDay, 81);
+	assert.equal(energy?.kcalPerDay, 810);
+	const dailyMl = getDailyFormulaTargetMl(energy?.kcalPerDay, 68);
+	assert.equal(dailyMl, 1191);
+	const remainingMl = getRemainingFormulaMl(dailyMl, 240);
+	assert.equal(remainingMl, 951);
+	const suggestions = getBottleDistributionSuggestions({
+		remainingFormulaMl: remainingMl,
+		bottleSizesMl: [180, 210, 240],
+		feedCount: 4
+	});
+	assert.deepEqual(suggestions[0].bottlesMl, [240, 240, 240, 240]);
+	assert.equal(suggestions[0].totalMl, 960);
+	assert.equal(suggestions[0].differenceMl, 9);
 });
