@@ -288,6 +288,13 @@
 	width: 100%;
 	min-width: 0;
 }
+
+.setup-card input[type='date'] {
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+}
+
 .setup-card .helper-text {
 	margin: 0;
 	color: var(--color-muted-text);
