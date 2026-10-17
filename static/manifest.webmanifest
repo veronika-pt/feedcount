@@ -1,7 +1,7 @@
 {
 	"name": "FeedCount",
 	"short_name": "FeedCount",
-	"start_url": "./",
+	"start_url": "./app",
 	"scope": "./",
 	"display": "standalone",
 	"theme_color": "#f7f1e8",

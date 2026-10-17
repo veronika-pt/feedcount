@@ -5,7 +5,7 @@
 	import { setup, saveSetupForm } from '$lib/stores/setupStore.js';
 
 	function goHome() {
-		goto(resolve('/'));
+		goto(resolve('/app'));
 	}
 </script>
 

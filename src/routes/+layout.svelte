@@ -9,8 +9,11 @@
 
 	let { children } = $props();
 	let ready = $state(false);
+	const isLanding = $derived(page.route.id === '/');
 	const isOnboarding = $derived(page.route.id === '/onboarding');
-	const canRenderPage = $derived(ready && isOnboarding !== $setup.onboardingCompleted);
+	const canRenderPage = $derived(
+		isLanding || (ready && isOnboarding !== $setup.onboardingCompleted)
+	);
 
 	onMount(() => {
 		initialiseSetup();
@@ -18,11 +21,11 @@
 	});
 
 	$effect(() => {
-		if (!ready) return;
+		if (!ready || isLanding) return;
 		if (!$setup.onboardingCompleted && !isOnboarding) {
 			void goto(resolve('/onboarding'), { replaceState: true });
 		} else if ($setup.onboardingCompleted && isOnboarding) {
-			void goto(resolve('/'), { replaceState: true });
+			void goto(resolve('/app'), { replaceState: true });
 		}
 	});
 </script>
